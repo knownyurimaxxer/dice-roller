@@ -2,9 +2,6 @@ import type { MessageKey } from "./i18n/locales/en";
 import { emptySpec } from "./dice/roll";
 import { Settings, Theme } from "./types";
 
-/** The app's name, shown in the header. */
-export const APP_NAME = "Dice Tray";
-
 /** Most rolls kept in the history; older ones are dropped. */
 export const HISTORY_LIMIT = 200;
 

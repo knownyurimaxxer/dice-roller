@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	Animated,
 	Easing,
-	Image,
 	Pressable,
 	ScrollView,
 	StyleSheet,
@@ -20,7 +19,6 @@ import NamePrompt from "../components/NamePrompt";
 import ResultOverlay, { Shown } from "../components/ResultOverlay";
 import Segmented from "../components/Segmented";
 import SettingsModal from "../components/SettingsModal";
-import { APP_NAME } from "../constants";
 import { collectValues, planThrow, Throw } from "../dice/plan";
 import {
 	CombineMode,
@@ -264,7 +262,6 @@ export default function RollScreen({
 				onSettled={onSettled}
 				onUnavailable={onUnavailable}
 			/>
-
 			{/* Header: no background, just the name and the buttons over the board. */}
 			<View
 				pointerEvents="box-none"
@@ -278,10 +275,6 @@ export default function RollScreen({
 				]}
 			>
 				<View style={s.headerRow}>
-					<View style={s.brand}>
-						<Image source={require("../../assets/logo.png")} style={s.logo} />
-						<Text style={s.brandText}>{APP_NAME}</Text>
-					</View>
 					<View style={s.headerIcons}>
 						<Pressable
 							accessibilityRole="button"
@@ -296,6 +289,7 @@ export default function RollScreen({
 							accessibilityLabel={t("favorites.title")}
 							hitSlop={10}
 							onPress={() => open("favorites")}
+							style={{ marginLeft: 20 }}
 						>
 							<Ionicons name="star-outline" size={26} color={iconColor} />
 						</Pressable>
@@ -304,13 +298,13 @@ export default function RollScreen({
 							accessibilityLabel={t("settings.title")}
 							hitSlop={10}
 							onPress={() => open("settings")}
+							style={{ marginLeft: "auto" }}
 						>
 							<Ionicons name="settings-outline" size={26} color={iconColor} />
 						</Pressable>
 					</View>
 				</View>
 			</View>
-
 			{noBoard && (
 				<Pressable
 					style={[s.banner, { top: insets.top + HEADER_HEIGHT + 4 }]}
@@ -319,14 +313,12 @@ export default function RollScreen({
 					<Text style={s.bannerText}>{t("board.fallback")}</Text>
 				</Pressable>
 			)}
-
 			{/* Before the first roll, a nudge in the empty space above the menu. */}
 			{phase === "setup" && !hasRolled && (
 				<View pointerEvents="none" style={[s.hint, { bottom: menuHeight }]}>
 					<Text style={s.hintText}>{t("roll.hint")}</Text>
 				</View>
 			)}
-
 			{/* The result, in the middle of the screen. */}
 			{phase === "result" && shown && (
 				<ResultOverlay
@@ -337,7 +329,6 @@ export default function RollScreen({
 					onSave={() => setSavePrompt({ spec: shown.spec, fromResult: true })}
 				/>
 			)}
-
 			{/* The menu: rolls down out of sight when you roll, and back up to reconfigure. */}
 			<Animated.View
 				pointerEvents={phase === "setup" ? "auto" : "none"}
@@ -425,7 +416,6 @@ export default function RollScreen({
 					</View>
 				</ScrollView>
 			</Animated.View>
-
 			<NamePrompt
 				visible={savePrompt !== null}
 				title={t("favorites.saveTitle")}
@@ -451,6 +441,7 @@ export default function RollScreen({
 				onRename={(id, name) => favs.rename(id, name).catch(() => {})}
 				onDelete={(id) => favs.remove(id).catch(() => {})}
 			/>
+			alignSelf: 'stretch',
 			<HistoryModal
 				visible={sheet === "history"}
 				history={hist.history}
@@ -479,10 +470,13 @@ const makeStyles = (t: Theme) => {
 			alignItems: "center",
 			justifyContent: "space-between",
 		},
-		brand: { flexDirection: "row", alignItems: "center", gap: 10 },
 		logo: { width: 32, height: 32 },
 		brandText: { color: onBg, fontSize: 20, fontWeight: "800" },
-		headerIcons: { flexDirection: "row", alignItems: "center", gap: 20 },
+		headerIcons: {
+			width: "100%",
+			flexDirection: "row",
+			alignItems: "center",
+		},
 		banner: {
 			position: "absolute",
 			left: 12,

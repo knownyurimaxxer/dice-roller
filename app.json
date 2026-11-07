@@ -1,7 +1,7 @@
 {
 	"expo": {
-		"name": "Dice Tray",
-		"slug": "dice-tray",
+		"name": "Dice Roller",
+		"slug": "dice-roller",
 		"version": "1.0.0",
 		"orientation": "default",
 		"icon": "./assets/icon.png",
