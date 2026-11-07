@@ -3,6 +3,13 @@
 #
 # One-time setup for the APK: see "Releases and Obtainium" in the README
 # (you need to add 4 repository secrets with your signing key).
+#
+# DIAGNOSTIC ADDITIONS (splash-screen crash hunt):
+#   - the untouched Gradle APK (dice-roller-X.Y.N-raw.apk) and the re-signed
+#     APK (dice-roller-X.Y.N.apk) are saved as downloadable artifacts;
+#   - the "smoke-test" job installs both on an Android 10 emulator, launches
+#     them and saves the logs (dice-roller-X.Y.N-raw-logcat.txt and
+#     dice-roller-X.Y.N-signed-logcat.txt).
 
 name: CI and Release
 
@@ -51,6 +58,8 @@ jobs:
     timeout-minutes: 60
     permissions:
       contents: write # needed to create the release
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
     env:
       KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -111,6 +120,20 @@ jobs:
         working-directory: android
         run: ./gradlew assembleRelease --no-daemon
 
+      # DIAGNOSTIC: the APK exactly as Gradle made it (debug-signed), before
+      # any of the re-signing below.
+      - name: Name the untouched APK
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: cp android/app/build/outputs/apk/release/app-release.apk "dice-roller-$VERSION-raw.apk"
+
+      - name: Save the untouched APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dice-roller-${{ steps.ver.outputs.version }}-raw
+          path: dice-roller-${{ steps.ver.outputs.version }}-raw.apk
+          retention-days: 14
+
       # Gradle signs with a throwaway debug key. Replace that with your own
       # key, so every build is signed the same way and can update the last one.
       - name: Sign the APK with your key
@@ -141,6 +164,14 @@ jobs:
           rm -f "$RUNNER_TEMP/release.jks"
           echo "apk=$out" >> "$GITHUB_OUTPUT"
 
+      # DIAGNOSTIC: the re-signed APK, the same file that goes in the release.
+      - name: Save the signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dice-roller-${{ steps.ver.outputs.version }}-signed
+          path: ${{ steps.sign.outputs.apk }}
+          retention-days: 14
+
       - name: Publish the release
         env:
           VERSION: ${{ steps.ver.outputs.version }}
@@ -151,3 +182,61 @@ jobs:
             --title "Dice Roller $VERSION" \
             --generate-notes \
             --latest
+
+  # DIAGNOSTIC: install both APKs on an Android 10 (API 29) emulator, open the
+  # app, and save the log. Look in the *-logcat.txt files for "FATAL EXCEPTION",
+  # "AndroidRuntime" or "SIGSEGV". The emulator draws 3D in software, so a
+  # crash that only happens with your phone's GPU may not show up here.
+  smoke-test:
+    name: Launch on Android 10 emulator
+    needs: release
+    if: always() && needs.release.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VERSION: ${{ needs.release.outputs.version }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dice-roller-${{ needs.release.outputs.version }}-raw
+          path: raw
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dice-roller-${{ needs.release.outputs.version }}-signed
+          path: signed
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Launch both APKs
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          script: |
+            adb logcat -c
+            adb install -r raw/dice-roller-${{ needs.release.outputs.version }}-raw.apk
+            adb shell monkey -p com.knownyurimaxxer.dicetray -c android.intent.category.LAUNCHER 1
+            sleep 25
+            adb logcat -d > dice-roller-${{ needs.release.outputs.version }}-raw-logcat.txt
+            adb shell pidof com.knownyurimaxxer.dicetray || echo "RAW APK: APP IS NOT RUNNING (crashed)"
+            adb uninstall com.knownyurimaxxer.dicetray
+            adb logcat -c
+            adb install -r signed/dice-roller-${{ needs.release.outputs.version }}.apk
+            adb shell monkey -p com.knownyurimaxxer.dicetray -c android.intent.category.LAUNCHER 1
+            sleep 25
+            adb logcat -d > dice-roller-${{ needs.release.outputs.version }}-signed-logcat.txt
+            adb shell pidof com.knownyurimaxxer.dicetray || echo "SIGNED APK: APP IS NOT RUNNING (crashed)"
+
+      - name: Save the logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dice-roller-${{ needs.release.outputs.version }}-logcat
+          path: |
+            dice-roller-${{ needs.release.outputs.version }}-raw-logcat.txt
+            dice-roller-${{ needs.release.outputs.version }}-signed-logcat.txt
