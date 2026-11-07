@@ -1,0 +1,38 @@
+{
+	"expo": {
+		"name": "Dice Tray",
+		"slug": "dice-tray",
+		"version": "1.0.0",
+		"orientation": "default",
+		"icon": "./assets/icon.png",
+		"userInterfaceStyle": "light",
+		"ios": {
+			"supportsTablet": true
+		},
+		"android": {
+			"adaptiveIcon": {
+				"backgroundColor": "#001935",
+				"foregroundImage": "./assets/android-icon-foreground.png",
+				"backgroundImage": "./assets/android-icon-background.png",
+				"monochromeImage": "./assets/android-icon-monochrome.png"
+			},
+			"predictiveBackGestureEnabled": false,
+			"package": "com.knownyurimaxxer.dicetray"
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		},
+		"plugins": [
+			"expo-sqlite",
+			"expo-localization",
+			[
+				"expo-splash-screen",
+				{
+					"image": "./assets/splash-icon.png",
+					"backgroundColor": "#001935",
+					"imageWidth": 288
+				}
+			]
+		]
+	}
+}
