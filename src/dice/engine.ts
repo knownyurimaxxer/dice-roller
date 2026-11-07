@@ -8,7 +8,7 @@
  */
 import type { ExpoWebGLRenderingContext } from "expo-gl";
 import type { Theme } from "../types";
-import { readableOn, shade } from "../utils/format";
+import { readableOn } from "../utils/format";
 import { buildFloorMesh } from "./board";
 import {
 	floorBounds,
@@ -27,7 +27,6 @@ import {
 import { cameraFor, identity, modelMatrix, type Camera } from "./mat4";
 import { DicePhysics } from "./physics";
 import type { Throw } from "./plan";
-import { DIE_SIDES } from "./roll";
 import { Renderer, type DrawItem, type GpuMesh } from "./renderer";
 
 export type EngineEvents = {
@@ -84,18 +83,12 @@ export class DiceEngine {
 		);
 	}
 
-	/** The colors of a die: the accent, a little lighter or darker per kind. */
-	private bodyColor(t: Throw): string {
-		const tone = [0, 0.2, -0.16][DIE_SIDES.indexOf(t.sides) % 3];
-		return shade(this.theme.accent, tone + (t.role === "tens" ? -0.14 : 0));
-	}
-
 	private meshFor(t: Throw): GpuMesh {
 		const key = `${t.sides}:${t.role}`;
 		let gpu = this.meshes.get(key);
 		if (!gpu) {
 			const geometry = buildGeometry(physicalKind(t.sides));
-			const body = this.bodyColor(t);
+			const body = this.theme.accent; // every die is exactly the accent color
 			const ink = readableOn(body) === "#FFFFFF" ? "#FFFFFF" : "#101010";
 			gpu = this.renderer.upload(
 				buildMesh(

@@ -441,7 +441,6 @@ export default function RollScreen({
 				onRename={(id, name) => favs.rename(id, name).catch(() => {})}
 				onDelete={(id) => favs.remove(id).catch(() => {})}
 			/>
-			alignSelf: 'stretch',
 			<HistoryModal
 				visible={sheet === "history"}
 				history={hist.history}

@@ -132,9 +132,11 @@ describe("wallsOf", () => {
 			farRight: 4,
 		};
 		const [left, right, bottom, top] = wallsOf(b, 0.5);
-		expect([left.nx, left.nz]).toEqual([1, 0]);
+		expect(left.nx).toBeCloseTo(1, 9);
+		expect(left.nz).toBeCloseTo(0, 9);
 		expect(left.x).toBeCloseTo(-3.5, 9);
-		expect([right.nx, right.nz]).toEqual([-1, -0]);
+		expect(right.nx).toBeCloseTo(-1, 9);
+		expect(right.nz).toBeCloseTo(0, 9);
 		expect(right.x).toBeCloseTo(3.5, 9);
 		expect(bottom.z).toBeCloseTo(4.5, 9);
 		expect(bottom.nz).toBe(-1);

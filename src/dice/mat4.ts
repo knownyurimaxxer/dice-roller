@@ -160,7 +160,7 @@ export type Camera = {
 };
 
 export const FOV_Y = (40 * Math.PI) / 180;
-const PITCH = (64 * Math.PI) / 180; // how high the camera looks down from
+const PITCH = (85 * Math.PI) / 180; // how high the camera looks down from
 // Near is kept far from the lens: some phones only have a 16-bit depth buffer.
 const NEAR = 4;
 const FAR = 140;
