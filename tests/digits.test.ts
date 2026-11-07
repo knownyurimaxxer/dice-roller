@@ -1,30 +1,52 @@
 import { describe, expect, it } from "vitest";
-import { DIGIT_STROKES, textTriangles, textWidth } from "../src/dice/digits";
+import { textTriangles, textWidth } from "../src/dice/digits";
+import { GLYPHS } from "../src/dice/glyphs";
 
-describe("stroke font", () => {
+const signedArea = (a: number[], b: number[], c: number[]) =>
+	((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])) / 2;
+
+describe("number font glyphs", () => {
 	it("has every digit", () => {
-		for (const d of "0123456789")
-			expect(DIGIT_STROKES[d].length > 0).toBe(true);
+		for (const d of "0123456789") {
+			expect(GLYPHS[d].indices.length).toBeGreaterThan(0);
+			expect(GLYPHS[d].indices.length % 3).toBe(0);
+			expect(GLYPHS[d].advance).toBeGreaterThan(0);
+		}
 	});
 
-	it("keeps every point inside the digit's box", () => {
-		for (const d of "0123456789")
-			for (const line of DIGIT_STROKES[d])
-				for (const [x, y] of line) {
-					expect(x).toBeGreaterThanOrEqual(0);
-					expect(x).toBeLessThanOrEqual(1);
-					expect(y).toBeGreaterThanOrEqual(0);
-					expect(y).toBeLessThanOrEqual(1);
-				}
+	it("points only at vertices that exist", () => {
+		for (const d of "0123456789") {
+			const g = GLYPHS[d];
+			const n = g.vertices.length / 2;
+			for (const i of g.indices) {
+				expect(i).toBeGreaterThanOrEqual(0);
+				expect(i).toBeLessThan(n);
+			}
+		}
 	});
 
-	it("makes 9 a turned 6", () => {
-		const six = DIGIT_STROKES["6"][0];
-		const nine = DIGIT_STROKES["9"][0];
-		six.forEach(([x, y], i) => {
-			expect(nine[i][0]).toBeCloseTo(1 - x, 9);
-			expect(nine[i][1]).toBeCloseTo(1 - y, 9);
-		});
+	it("keeps every digit between the baseline and the top", () => {
+		for (const d of "0123456789")
+			for (let i = 1; i < GLYPHS[d].vertices.length; i += 2) {
+				expect(GLYPHS[d].vertices[i]).toBeGreaterThanOrEqual(0);
+				expect(GLYPHS[d].vertices[i]).toBeLessThanOrEqual(1);
+			}
+	});
+
+	it("leaves the holes of 0, 4, 6, 8 and 9 open", () => {
+		// the inked area is smaller than the glyph's bounding box by at least the hole
+		for (const d of "04689") {
+			const g = GLYPHS[d];
+			let ink = 0;
+			for (let i = 0; i < g.indices.length; i += 3) {
+				const p = [0, 1, 2].map((k) => [
+					g.vertices[g.indices[i + k] * 2],
+					g.vertices[g.indices[i + k] * 2 + 1],
+				]);
+				ink += signedArea(p[0], p[1], p[2]);
+			}
+			expect(ink).toBeLessThan((g.xMax - g.xMin) * 0.85);
+		}
 	});
 });
 
@@ -32,19 +54,23 @@ describe("textTriangles", () => {
 	it("draws counter-clockwise triangles", () => {
 		for (const text of ["8", "20", "00", "69"])
 			for (const [a, b, c] of textTriangles(text, 1))
-				expect(
-					(b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]),
-				).toBeGreaterThanOrEqual(0);
+				expect(signedArea(a, b, c)).toBeGreaterThanOrEqual(0);
 	});
 
 	it("is centered and as wide as it says", () => {
 		const tris = textTriangles("20", 1).flat();
 		const xs = tris.map((p) => p[0]);
 		const half = textWidth("20", 1) / 2;
-		expect(Math.min(...xs)).toBeGreaterThan(-half - 0.1);
-		expect(Math.max(...xs)).toBeLessThan(half + 0.1);
-		// roughly symmetrical around the middle
-		expect(Math.abs(Math.min(...xs) + Math.max(...xs))).toBeLessThan(0.1);
+		expect(Math.min(...xs)).toBeCloseTo(-half, 2);
+		expect(Math.max(...xs)).toBeCloseTo(half, 2);
+	});
+
+	it("is centered vertically on the origin", () => {
+		const ys = textTriangles("8", 1)
+			.flat()
+			.map((p) => p[1]);
+		expect(Math.min(...ys)).toBeCloseTo(-0.5, 1);
+		expect(Math.max(...ys)).toBeCloseTo(0.5, 1);
 	});
 
 	it("scales with the height and grows with more digits", () => {
@@ -55,7 +81,6 @@ describe("textTriangles", () => {
 	});
 
 	it("underlines 6 and 9 only", () => {
-		const count = (t: string) => textTriangles(t, 1).length;
 		const lowest = (t: string) =>
 			Math.min(
 				...textTriangles(t, 1)
@@ -64,6 +89,6 @@ describe("textTriangles", () => {
 			);
 		expect(lowest("6")).toBeLessThan(lowest("8") - 0.1);
 		expect(lowest("9")).toBeLessThan(lowest("8") - 0.1);
-		expect(count("8")).toBeGreaterThan(0);
+		expect(lowest("0")).toBeCloseTo(lowest("8"), 1);
 	});
 });

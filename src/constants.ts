@@ -2,6 +2,13 @@ import type { MessageKey } from "./i18n/locales/en";
 import { emptySpec } from "./dice/roll";
 import { Settings, Theme } from "./types";
 
+/**
+ * The font of the big result numbers. The numbers on the dice are cut from the
+ * same font file (assets/fonts/Inter-Black.otf, see tools/generate_glyphs.py),
+ * so the two always match.
+ */
+export const NUMBER_FONT = "Inter-Black";
+
 /** Most rolls kept in the history; older ones are dropped. */
 export const HISTORY_LIMIT = 200;
 

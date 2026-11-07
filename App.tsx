@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import {
 	initialWindowMetrics,
 	SafeAreaProvider,
 } from "react-native-safe-area-context";
+import { NUMBER_FONT } from "./src/constants";
 import { useSettings } from "./src/hooks/useSettings";
 import { useDeviceLanguageTags } from "./src/i18n/device";
 import { I18nContext } from "./src/i18n/I18nContext";
@@ -25,11 +27,19 @@ warmDb();
 /** Longest the splash screen is allowed to stay up if something is slow. */
 const SPLASH_MAX_MS = 4000;
 
-/** Icon fonts load lazily, so icons would pop in late. Load them up front. */
-function preloadIconFonts(): Promise<unknown> {
+/**
+ * Icon fonts load lazily, so icons would pop in late. Load them up front,
+ * together with the number font of the result (the dice use the same one).
+ */
+function preloadFonts(): Promise<unknown> {
 	const loadFont = (icons: unknown) =>
 		(icons as { loadFont?: () => Promise<void> }).loadFont?.();
-	return Promise.allSettled([loadFont(Ionicons)]);
+	return Promise.allSettled([
+		loadFont(Ionicons),
+		Font.loadAsync({
+			[NUMBER_FONT]: require("./assets/fonts/Inter-Black.otf"),
+		}),
+	]);
 }
 
 export default function App() {
@@ -42,7 +52,7 @@ export default function App() {
 	const splashHidden = useRef(false);
 
 	useEffect(() => {
-		preloadIconFonts().finally(() => setFontsReady(true));
+		preloadFonts().finally(() => setFontsReady(true));
 		warmSounds();
 	}, []);
 
@@ -52,7 +62,7 @@ export default function App() {
 		SplashScreen.hideAsync().catch(() => {});
 	}, []);
 
-	// Settings, icon fonts and the first draw of the screen are all done: the
+	// Settings, fonts and the first draw of the screen are all done: the
 	// screen is in its final shape, so reveal it.
 	useEffect(() => {
 		if (!ready || !fontsReady || !screenReady) return;

@@ -11,6 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import type { GroupResult, RollResult, RollSpec } from "../dice/roll";
 import { specLabel } from "../dice/roll";
+import { NUMBER_FONT } from "../constants";
 import { useT } from "../i18n/I18nContext";
 import { useTheme } from "../theme/ThemeContext";
 import { Theme } from "../types";
@@ -258,8 +259,8 @@ const makeStyles = (t: Theme) => {
 		},
 		total: {
 			color: number,
+			fontFamily: NUMBER_FONT,
 			fontSize: 96,
-			fontWeight: "900",
 			lineHeight: 104,
 			maxWidth: "100%",
 		},
@@ -291,8 +292,8 @@ const makeStyles = (t: Theme) => {
 		tile: { alignItems: "center", minWidth: 64, maxWidth: 130 },
 		tileNumber: {
 			color: number,
+			fontFamily: NUMBER_FONT,
 			fontSize: 56,
-			fontWeight: "900",
 			lineHeight: 64,
 		},
 		actions: {

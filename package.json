@@ -8,6 +8,7 @@
 		"cannon-es": "^0.20.0",
 		"expo": "~58.0.20",
 		"expo-audio": "~58.0.0",
+		"expo-font": "~58.0.11",
 		"expo-gl": "~58.0.0",
 		"expo-haptics": "~58.0.7",
 		"expo-localization": "~58.0.5",
@@ -37,7 +38,8 @@
 		"test:watch": "vitest",
 		"check": "npm run typecheck && npm test",
 		"branding": "python3 tools/generate_branding.py",
-		"sounds": "python3 tools/generate_sounds.py"
+		"sounds": "python3 tools/generate_sounds.py",
+		"glyphs": "python3 tools/generate_glyphs.py"
 	},
 	"private": true
 }
