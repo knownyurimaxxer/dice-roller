@@ -1,9 +1,10 @@
-"""Draws the Dice Tray branding into assets/ (needs Pillow: pip install pillow).
+"""Draws the Dice Roller branding into assets/ (needs Pillow: pip install pillow).
 
 Run from the project root:  python3 tools/generate_branding.py
 The mark is a fanned stack of dice, in the colors of the default Navy theme.
 """
 import os
+import subprocess
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 NAVY, NAVY_LIGHT = (0, 25, 53), (10, 62, 112)
@@ -109,12 +110,30 @@ def icon_on_gradient(size, scale):
     return base
 
 
+def find_font():
+    """Poppins Bold wherever it is installed (asks fontconfig), else any bold sans."""
+    for query in ("Poppins:bold", "sans:bold"):
+        try:
+            path = subprocess.run(
+                ["fc-match", "-f", "%{file}", query],
+                capture_output=True, text=True, check=True,
+            ).stdout.strip()
+        except (OSError, subprocess.CalledProcessError):
+            continue
+        if path and os.path.exists(path):
+            return path
+    raise SystemExit("No bold font found. Install Poppins (or any bold sans font) and run again.")
+
+
+_FONT_PATH = None
+
+
 def font(size):
-    for p in ("/usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf",
-              "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"):
-        if os.path.exists(p):
-            return ImageFont.truetype(p, size)
-    return ImageFont.load_default()
+    global _FONT_PATH
+    if _FONT_PATH is None:
+        _FONT_PATH = find_font()
+        print("using font", _FONT_PATH)
+    return ImageFont.truetype(_FONT_PATH, size)
 
 
 def main():
@@ -136,7 +155,7 @@ def main():
     mark = render_mark(500, 1.45)
     fg.alpha_composite(mark, (560, 0))
     d = ImageDraw.Draw(fg)
-    d.text((70, 160), "Dice Tray", font=font(84), fill=WHITE)
+    d.text((70, 160), "Dice Roller", font=font(84), fill=WHITE)
     d.text((74, 275), "Throw 3D dice on a tray.", font=font(34), fill=ACCENT)
     save(fg, "store/feature-graphic-1024x500.png", "RGB")
 
