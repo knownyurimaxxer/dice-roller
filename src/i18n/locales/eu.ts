@@ -71,6 +71,15 @@ export const eu: Messages = {
 	"settings.hapticsToggle": "Ukipen-erantzuna",
 	"settings.hapticsHint": "Bibrazio laburrak botatzen duzun bitartean.",
 	"settings.hapticsTriggers": "Aukeratu zerk egiten duen bibrazioa",
+	"settings.motion": "Mugimendua",
+	"settings.throwToRoll": "Jaurti keinu batekin",
+	"settings.throwToRollHint":
+		"Egin jaurtiketa-keinu bat telefonoarekin dadoak jaurtitzeko.",
+	"settings.throwSensitivity": "Sentikortasuna",
+	"settings.throwSensitivityHint":
+		"Altuagoak jaurtiketa leunekin erreakzionatzen du. Baxuagoak jaurtiketa indartsuagoa behar du, nahi gabe aktibatu ez dadin.",
+	"settings.throwLow": "Baxua",
+	"settings.throwHigh": "Altua",
 	"haptics.throw": "Dadoak botatzea",
 	"haptics.clash": "Dadoen talka",
 	"haptics.result": "Emaitza erakustea",

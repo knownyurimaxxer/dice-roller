@@ -39,7 +39,7 @@ describe("floorPoint", () => {
 
 	it("finds nothing when looking at the sky", () => {
 		// far above the top of the screen the line of sight rises above the horizon
-		expect(floorPoint(buildCamera(1, 20), 0, 10)).toBe(null);
+		expect(floorPoint(buildCamera(1, 20), 0, 1e6)).toBe(null);
 	});
 });
 

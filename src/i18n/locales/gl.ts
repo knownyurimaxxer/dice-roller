@@ -72,6 +72,15 @@ export const gl: Messages = {
 	"settings.hapticsToggle": "Resposta táctil",
 	"settings.hapticsHint": "Vibracións curtas mentres lanzas.",
 	"settings.hapticsTriggers": "Elixe que vibra",
+	"settings.motion": "Movemento",
+	"settings.throwToRoll": "Lanzar cun xesto",
+	"settings.throwToRollHint":
+		"Fai un xesto de lanzamento co móbil para lanzar os dados.",
+	"settings.throwSensitivity": "Sensibilidade",
+	"settings.throwSensitivityHint":
+		"Máis alta reacciona a lanzamentos suaves. Máis baixa pide un lanzamento máis forte, para que non se active sen querer.",
+	"settings.throwLow": "Baixa",
+	"settings.throwHigh": "Alta",
 	"haptics.throw": "Lanzar os dados",
 	"haptics.clash": "Choque de dados",
 	"haptics.result": "Mostrar o resultado",

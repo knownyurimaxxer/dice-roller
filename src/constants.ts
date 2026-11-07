@@ -1,6 +1,7 @@
 import type { MessageKey } from "./i18n/locales/en";
 import { emptySpec } from "./dice/roll";
 import { Settings, Theme } from "./types";
+import { THROW_SENSITIVITY_DEFAULT } from "./utils/throw";
 
 /**
  * The font of the big result numbers. The numbers on the dice are cut from the
@@ -127,6 +128,8 @@ export const DEFAULT_SETTINGS: Settings = {
 		HapticTrigger,
 		boolean
 	>,
+	throwToRoll: false,
+	throwSensitivity: THROW_SENSITIVITY_DEFAULT,
 	lastSpec: emptySpec(),
 };
 

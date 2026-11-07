@@ -35,6 +35,7 @@ If you have an issue, just open an [Issue](../../issues)!
   separately switchable in Settings.
 - **Haptics.** Off by default. Turn them on in Settings, then choose which
   moments vibrate: throwing, clashing, the result and button taps.
+- **Gestures.** Off by default. Turn it on on the Settings and choose a sensitivity. Then u'll be able to roll the dice by moving the phone.
 - **Languages.** Settings > Language: "System default" follows the phone (and
   uses English when the phone's language isn't available), or pick one.
   English, Spanish, Catalan, Galician, Basque and Portuguese.

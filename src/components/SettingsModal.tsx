@@ -25,6 +25,8 @@ import { Settings, Theme, UpdateSetting } from "../types";
 import { readableOn } from "../utils/format";
 import { haptic, playHaptic } from "../utils/haptics";
 import { previewSound } from "../utils/sound";
+import { THROW_SENSITIVITY_MAX, THROW_SENSITIVITY_MIN } from "../utils/throw";
+import SensitivitySlider from "./SensitivitySlider";
 import Sheet from "./Sheet";
 
 type Props = {
@@ -258,6 +260,42 @@ export default function SettingsModal({
 					</View>
 				)}
 
+				{/* motion: roll the dice by throwing the phone */}
+				<Text style={[s.section, { marginTop: 24 }]}>
+					{t("settings.motion")}
+				</Text>
+				<View style={s.row}>
+					<View style={{ flex: 1, paddingRight: 12 }}>
+						<Text style={s.rowTitle}>{t("settings.throwToRoll")}</Text>
+						<Text style={s.rowHint}>{t("settings.throwToRollHint")}</Text>
+					</View>
+					<Switch
+						value={settings.throwToRoll}
+						onValueChange={(v) => {
+							update("throwToRoll", v);
+							if (v) playHaptic("buttons"); // a taste of it
+						}}
+						trackColor={track}
+					/>
+				</View>
+				{settings.throwToRoll && (
+					<View style={[s.rowBlock, { marginTop: 12 }]}>
+						<Text style={s.rowTitle}>{t("settings.throwSensitivity")}</Text>
+						<SensitivitySlider
+							value={settings.throwSensitivity}
+							min={THROW_SENSITIVITY_MIN}
+							max={THROW_SENSITIVITY_MAX}
+							onChange={(v) => update("throwSensitivity", v)}
+							accessibilityLabel={t("settings.throwSensitivity")}
+						/>
+						<View style={s.sliderEnds}>
+							<Text style={s.sliderEnd}>{t("settings.throwLow")}</Text>
+							<Text style={s.sliderEnd}>{t("settings.throwHigh")}</Text>
+						</View>
+						<Text style={s.rowHint}>{t("settings.throwSensitivityHint")}</Text>
+					</View>
+				)}
+
 				{/* theme */}
 				<Text style={[s.section, { marginTop: 24 }]}>
 					{t("settings.theme")}
@@ -421,6 +459,12 @@ const makeStyles = (t: Theme) => {
 			marginTop: 4,
 			lineHeight: 18,
 		},
+		sliderEnds: {
+			flexDirection: "row",
+			justifyContent: "space-between",
+			marginBottom: 4,
+		},
+		sliderEnd: { color: t.text + "99", fontSize: 12, fontWeight: "700" },
 		preset: {
 			width: 84,
 			padding: 8,

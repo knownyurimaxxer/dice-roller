@@ -36,6 +36,7 @@ import {
 } from "../dice/roll";
 import { useFavorites } from "../hooks/useFavorites";
 import { useHistory } from "../hooks/useHistory";
+import { useThrowToRoll } from "../hooks/useThrowToRoll";
 import { useI18n } from "../i18n/I18nContext";
 import { useTheme } from "../theme/ThemeContext";
 import { Settings, Theme, UpdateSetting } from "../types";
@@ -184,6 +185,17 @@ export default function RollScreen({
 			}, wait);
 		},
 		[phase, rollWithoutBoard],
+	);
+
+	// Throwing the phone rolls the current dice, unless a sheet or prompt is open.
+	const onThrowGesture = useCallback(() => {
+		if (sheet !== null || savePrompt !== null) return;
+		roll(spec);
+	}, [sheet, savePrompt, roll, spec]);
+	useThrowToRoll(
+		settings.throwToRoll,
+		settings.throwSensitivity,
+		onThrowGesture,
 	);
 
 	const onSettled = useCallback(

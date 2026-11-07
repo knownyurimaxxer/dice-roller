@@ -3,6 +3,7 @@ import { DEFAULT_SETTINGS } from "../constants";
 import { normalizeSpec } from "../dice/roll";
 import { getAllSettings, setSetting } from "../storage/db";
 import { Settings, UpdateSetting } from "../types";
+import { clampSensitivity } from "../utils/throw";
 
 export function useSettings() {
 	const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
@@ -27,6 +28,10 @@ export function useSettings() {
 						? savedHaptics
 						: {}),
 				},
+				throwToRoll: get<unknown>("throwToRoll", false) === true,
+				throwSensitivity: clampSensitivity(
+					get<unknown>("throwSensitivity", DEFAULT_SETTINGS.throwSensitivity),
+				),
 				lastSpec: normalizeSpec(get<unknown>("lastSpec", null)),
 			});
 			setReady(true);

@@ -71,6 +71,15 @@ export const ca: Messages = {
 	"settings.hapticsToggle": "Resposta tàctil",
 	"settings.hapticsHint": "Vibracions curtes mentre llances.",
 	"settings.hapticsTriggers": "Tria què vibra",
+	"settings.motion": "Moviment",
+	"settings.throwToRoll": "Llançar amb un gest",
+	"settings.throwToRollHint":
+		"Fes un gest de llançament amb el mòbil per llançar els daus.",
+	"settings.throwSensitivity": "Sensibilitat",
+	"settings.throwSensitivityHint":
+		"Més alta reacciona a llançaments suaus. Més baixa demana un llançament més fort, perquè no s'activi sense voler.",
+	"settings.throwLow": "Baixa",
+	"settings.throwHigh": "Alta",
 	"haptics.throw": "Llançar els daus",
 	"haptics.clash": "Xoc de daus",
 	"haptics.result": "Mostrar el resultat",

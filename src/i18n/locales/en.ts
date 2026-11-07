@@ -76,6 +76,15 @@ export const en = {
 	"settings.hapticsToggle": "Haptic feedback",
 	"settings.hapticsHint": "Short vibrations while you roll.",
 	"settings.hapticsTriggers": "Choose what vibrates",
+	"settings.motion": "Motion",
+	"settings.throwToRoll": "Throw to roll",
+	"settings.throwToRollHint":
+		"Make a throwing motion with your phone to roll the dice.",
+	"settings.throwSensitivity": "Sensitivity",
+	"settings.throwSensitivityHint":
+		"Higher reacts to gentler throws. Lower needs a harder throw, so it won't trigger by accident.",
+	"settings.throwLow": "Low",
+	"settings.throwHigh": "High",
 	"haptics.throw": "Throwing the dice",
 	"haptics.clash": "Dice clashing",
 	"haptics.result": "Showing the result",
