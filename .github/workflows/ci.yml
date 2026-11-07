@@ -1,0 +1,153 @@
+# Dice Roller: checks on every push to main, and an installable
+# Android APK (published as a GitHub Release) every time `main` changes.
+#
+# One-time setup for the APK: see "Releases and Obtainium" in the README
+# (you need to add 4 repository secrets with your signing key).
+
+name: CI and Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "LICENSE"
+  workflow_dispatch: # lets you press "Run workflow" by hand on main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # A newer push replaces an older check. Releases are never cancelled.
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  HUSKY: "0" # no git hooks on the runner
+
+jobs:
+  check:
+    name: Type check and tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  release:
+    name: Build APK and publish release
+    needs: check
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write # needed to create the release
+    env:
+      KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Make sure the signing secrets exist
+        run: |
+          missing=0
+          for v in KEYSTORE_B64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!v}" ]; then
+              echo "::error::Missing repository secret for $v (see 'Releases and Obtainium' in the README)"
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - run: npm ci
+
+      # Version = major.minor from package.json + the run number, e.g. 1.0.42.
+      # The run number only goes up, so every build can update the previous one.
+      - name: Work out the version
+        id: ver
+        run: |
+          base=$(node -p "require('./package.json').version.split('.').slice(0, 2).join('.')")
+          echo "version=$base.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Stamp the version into app.json
+        run: |
+          node -e '
+            const fs = require("fs");
+            const app = JSON.parse(fs.readFileSync("app.json", "utf8"));
+            app.expo.version = process.env.VERSION;
+            app.expo.android.versionCode = Number(process.env.CODE);
+            fs.writeFileSync("app.json", JSON.stringify(app, null, "\t") + "\n");
+          '
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+          CODE: ${{ github.run_number }}
+
+      - name: Generate the Android project
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Build the release APK
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon
+
+      # Gradle signs with a throwaway debug key. Replace that with your own
+      # key, so every build is signed the same way and can update the last one.
+      - name: Sign the APK with your key
+        id: sign
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          tools=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -n 1)
+          built=android/app/build/outputs/apk/release/app-release.apk
+          out="dice-roller-$VERSION.apk"
+
+          echo "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+
+          cp "$built" "$RUNNER_TEMP/stripped.apk"
+          zip -q -d "$RUNNER_TEMP/stripped.apk" 'META-INF/*.SF' 'META-INF/*.RSA' 'META-INF/*.DSA' 'META-INF/*.EC' 'META-INF/MANIFEST.MF' || true
+          "$tools/zipalign" -p -f 4 "$RUNNER_TEMP/stripped.apk" "$RUNNER_TEMP/aligned.apk"
+
+          "$tools/apksigner" sign \
+            --ks "$RUNNER_TEMP/release.jks" \
+            --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass env:KEYSTORE_PASSWORD \
+            --key-pass env:KEY_PASSWORD \
+            --out "$out" \
+            "$RUNNER_TEMP/aligned.apk"
+
+          "$tools/apksigner" verify --print-certs "$out"
+          rm -f "$RUNNER_TEMP/release.jks"
+          echo "apk=$out" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the release
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+          APK: ${{ steps.sign.outputs.apk }}
+        run: |
+          gh release create "v$VERSION" "$APK" \
+            --target "$GITHUB_SHA" \
+            --title "Dice Roller $VERSION" \
+            --generate-notes \
+            --latest

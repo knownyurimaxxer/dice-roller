@@ -32,6 +32,14 @@
 					"backgroundColor": "#001935",
 					"imageWidth": 288
 				}
+			],
+			[
+				"expo-build-properties",
+				{
+					"android": {
+						"extraProguardRules": "-keep class expo.modules.** { *; }\n-keep class * extends expo.modules.kotlin.views.ExpoView { *; }"
+					}
+				}
 			]
 		]
 	}
