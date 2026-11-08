@@ -8,6 +8,7 @@ import {
 	SafeAreaProvider,
 } from "react-native-safe-area-context";
 import { NUMBER_FONT } from "./src/constants";
+import { useOrientationLock } from "./src/hooks/useOrientationLock";
 import { useSettings } from "./src/hooks/useSettings";
 import { useDeviceLanguageTags } from "./src/i18n/device";
 import { I18nContext } from "./src/i18n/I18nContext";
@@ -45,6 +46,8 @@ function preloadFonts(): Promise<unknown> {
 export default function App() {
 	const { settings, ready, update } = useSettings();
 	const deviceLanguages = useDeviceLanguageTags();
+	// The screen never rotates by itself; wait for the saved choice before locking.
+	useOrientationLock(ready ? settings.orientation : null);
 	configureHaptics(settings.hapticsEnabled, settings.haptics);
 	configureSound(settings.soundThrow, settings.soundResult);
 	const [fontsReady, setFontsReady] = useState(false);

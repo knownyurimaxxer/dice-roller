@@ -1,6 +1,7 @@
 import type { MessageKey } from "./i18n/locales/en";
 import { emptySpec } from "./dice/roll";
 import { Settings, Theme } from "./types";
+import { DEFAULT_LAYOUT } from "./utils/orientation";
 import { THROW_SENSITIVITY_DEFAULT } from "./utils/throw";
 
 /**
@@ -130,6 +131,7 @@ export const DEFAULT_SETTINGS: Settings = {
 	>,
 	throwToRoll: false,
 	throwSensitivity: THROW_SENSITIVITY_DEFAULT,
+	orientation: DEFAULT_LAYOUT,
 	lastSpec: emptySpec(),
 };
 

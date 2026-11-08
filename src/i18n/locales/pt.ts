@@ -81,6 +81,11 @@ export const pt: Messages = {
 		"Mais alta reage a lançamentos suaves. Mais baixa exige um lançamento mais forte, para não ativar sem querer.",
 	"settings.throwLow": "Baixa",
 	"settings.throwHigh": "Alta",
+	"settings.orientation": "Orientação",
+	"settings.orientationHint":
+		"O ecrã fica nesta posição e nunca roda sozinho, por isso lançar o telemóvel não o pode rodar.",
+	"settings.orientationPortrait": "Vertical",
+	"settings.orientationLandscape": "Horizontal",
 	"haptics.throw": "Lançar os dados",
 	"haptics.clash": "Choque de dados",
 	"haptics.result": "Mostrar o resultado",

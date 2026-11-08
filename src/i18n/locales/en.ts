@@ -85,6 +85,11 @@ export const en = {
 		"Higher reacts to gentler throws. Lower needs a harder throw, so it won't trigger by accident.",
 	"settings.throwLow": "Low",
 	"settings.throwHigh": "High",
+	"settings.orientation": "Orientation",
+	"settings.orientationHint":
+		"The screen stays in this position and never rotates by itself, so throwing the phone can't turn it.",
+	"settings.orientationPortrait": "Vertical",
+	"settings.orientationLandscape": "Horizontal",
 	"haptics.throw": "Throwing the dice",
 	"haptics.clash": "Dice clashing",
 	"haptics.result": "Showing the result",

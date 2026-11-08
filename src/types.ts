@@ -1,5 +1,6 @@
 import type { HapticTrigger } from "./constants";
 import type { RollSpec } from "./dice/roll";
+import type { Layout } from "./utils/orientation";
 
 export type Theme = {
 	background: string;
@@ -26,6 +27,8 @@ export type Settings = {
 	throwToRoll: boolean;
 	/** How gentle a throw can be, from 1 (hard) to 10 (gentle). */
 	throwSensitivity: number;
+	/** Which way up the screen stays: it never rotates by itself. */
+	orientation: Layout;
 	/** The dice, mode and combine option that were selected last. */
 	lastSpec: RollSpec;
 };

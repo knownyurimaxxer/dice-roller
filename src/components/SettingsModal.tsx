@@ -24,9 +24,11 @@ import { useTheme } from "../theme/ThemeContext";
 import { Settings, Theme, UpdateSetting } from "../types";
 import { readableOn } from "../utils/format";
 import { haptic, playHaptic } from "../utils/haptics";
+import type { Layout } from "../utils/orientation";
 import { previewSound } from "../utils/sound";
 import { THROW_SENSITIVITY_MAX, THROW_SENSITIVITY_MIN } from "../utils/throw";
 import SensitivitySlider from "./SensitivitySlider";
+import Segmented from "./Segmented";
 import Sheet from "./Sheet";
 
 type Props = {
@@ -106,6 +108,10 @@ export default function SettingsModal({
 		</View>
 	);
 	const track = { true: theme.accent, false: "#88888888" };
+	const orientationOptions: { key: Layout; label: string }[] = [
+		{ key: "portrait", label: t("settings.orientationPortrait") },
+		{ key: "landscape", label: t("settings.orientationLandscape") },
+	];
 
 	return (
 		<Sheet visible={visible} title={t("settings.title")} onClose={onClose}>
@@ -295,6 +301,21 @@ export default function SettingsModal({
 						<Text style={s.rowHint}>{t("settings.throwSensitivityHint")}</Text>
 					</View>
 				)}
+
+				{/* screen: stays vertical or horizontal, never rotates by itself */}
+				<Text style={[s.section, { marginTop: 24 }]}>
+					{t("settings.orientation")}
+				</Text>
+				<View style={s.rowBlock}>
+					<Segmented
+						options={orientationOptions}
+						value={settings.orientation}
+						onChange={(layout) => update("orientation", layout)}
+					/>
+					<Text style={[s.rowHint, { marginTop: 10 }]}>
+						{t("settings.orientationHint")}
+					</Text>
+				</View>
 
 				{/* theme */}
 				<Text style={[s.section, { marginTop: 24 }]}>
