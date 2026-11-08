@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { Fragment, useEffect, useMemo, useRef } from "react";
 import {
 	Animated,
 	Pressable,
@@ -48,10 +48,13 @@ function Values({
 	return (
 		<Text style={style} numberOfLines={2}>
 			{group.values.map((v, i) => (
-				<Text key={i} style={group.kept.includes(i) ? undefined : dim}>
+				<Fragment key={i}>
+					{/* The gap stays outside the dimmed text: inside it, the strike-through
+					    would run across the gap too, and stick out to the left of every
+					    number but the first. */}
 					{i > 0 ? "  " : ""}
-					{v}
-				</Text>
+					<Text style={group.kept.includes(i) ? undefined : dim}>{v}</Text>
+				</Fragment>
 			))}
 		</Text>
 	);
