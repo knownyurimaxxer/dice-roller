@@ -35,7 +35,12 @@ If you have an issue, just open an [Issue](../../issues)!
   separately switchable in Settings.
 - **Haptics.** Off by default. Turn them on in Settings, then choose which
   moments vibrate: throwing, clashing, the result and button taps.
-- **Gestures.** Off by default. Turn it on on the Settings and choose a sensitivity. Then u'll be able to roll the dice by moving the phone.
+- **Gestures.** Both are off by default (Settings > Gestures). Swipe up
+  anywhere on the screen to roll the dice you picked, or throw the phone
+  (you choose how gentle the throw can be).
+- **It never rotates by itself.** Settings > Orientation keeps the screen
+  vertical or horizontal, so moving the phone to roll can't turn the screen.
+  Vertical is the default.
 - **Languages.** Settings > Language: "System default" follows the phone (and
   uses English when the phone's language isn't available), or pick one.
   English, Spanish, Catalan, Galician, Basque and Portuguese.

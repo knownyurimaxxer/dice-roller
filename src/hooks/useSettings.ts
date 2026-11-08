@@ -3,6 +3,7 @@ import { DEFAULT_SETTINGS } from "../constants";
 import { normalizeSpec } from "../dice/roll";
 import { getAllSettings, setSetting } from "../storage/db";
 import { Settings, UpdateSetting } from "../types";
+import { normalizeLayout } from "../utils/orientation";
 import { clampSensitivity } from "../utils/throw";
 
 export function useSettings() {
@@ -28,10 +29,12 @@ export function useSettings() {
 						? savedHaptics
 						: {}),
 				},
+				swipeToRoll: get<unknown>("swipeToRoll", false) === true,
 				throwToRoll: get<unknown>("throwToRoll", false) === true,
 				throwSensitivity: clampSensitivity(
 					get<unknown>("throwSensitivity", DEFAULT_SETTINGS.throwSensitivity),
 				),
+				orientation: normalizeLayout(get<unknown>("orientation", null)),
 				lastSpec: normalizeSpec(get<unknown>("lastSpec", null)),
 			});
 			setReady(true);

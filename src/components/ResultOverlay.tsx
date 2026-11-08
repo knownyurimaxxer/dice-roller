@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { Fragment, useEffect, useMemo, useRef } from "react";
 import {
 	Animated,
 	Pressable,
@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { GroupResult, RollResult, RollSpec } from "../dice/roll";
-import { specLabel } from "../dice/roll";
+import { listedGroups, specLabel } from "../dice/roll";
 import { NUMBER_FONT } from "../constants";
 import { useT } from "../i18n/I18nContext";
 import { useTheme } from "../theme/ThemeContext";
@@ -48,10 +48,13 @@ function Values({
 	return (
 		<Text style={style} numberOfLines={2}>
 			{group.values.map((v, i) => (
-				<Text key={i} style={group.kept.includes(i) ? undefined : dim}>
+				<Fragment key={i}>
+					{/* The gap stays outside the dimmed text: inside it, the strike-through
+					    would run across the gap too, and stick out to the left of every
+					    number but the first. */}
 					{i > 0 ? "  " : ""}
-					{v}
-				</Text>
+					<Text style={group.kept.includes(i) ? undefined : dim}>{v}</Text>
+				</Fragment>
 			))}
 		</Text>
 	);
@@ -133,7 +136,7 @@ export default function ResultOverlay({
 
 	const { spec, result, perfect } = shown;
 	const separate = spec.combine === "separate" && result.groups.length > 1;
-	const detail = result.groups.filter((g) => g.values.length > 1);
+	const detail = listedGroups(result);
 	const onBg = readableOn(theme.background);
 
 	return (

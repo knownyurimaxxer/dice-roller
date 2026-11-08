@@ -10,6 +10,7 @@ import {
 import {
 	groupDetail,
 	HistoryEntry,
+	listedGroups,
 	resultSummary,
 	specLabel,
 } from "../dice/roll";
@@ -53,8 +54,7 @@ export default function HistoryModal({
 				contentContainerStyle={s.list}
 				ListEmptyComponent={<Text style={s.empty}>{t("history.empty")}</Text>}
 				renderItem={({ item }) => {
-					const detail = item.result.groups
-						.filter((g) => g.values.length > 1)
+					const detail = listedGroups(item.result)
 						.map((g) => `d${g.sides}: ${groupDetail(g)}`)
 						.join("   ");
 					return (

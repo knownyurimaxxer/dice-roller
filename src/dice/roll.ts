@@ -250,6 +250,17 @@ export const favoriteTitle = (f: { name: string; spec: RollSpec }): string =>
 export const groupDetail = (g: GroupResult): string =>
 	g.values.map((v, i) => (g.kept.includes(i) ? `${v}` : `(${v})`)).join(" ");
 
+/**
+ * The kinds of die worth listing under the result. With several kinds, all of
+ * them (a lone d20 next to two d6 still shows what it rolled); with one kind,
+ * only when more than one die was thrown (one die is just the result itself).
+ */
+export function listedGroups(r: RollResult): GroupResult[] {
+	return r.groups.length > 1
+		? r.groups
+		: r.groups.filter((g) => g.values.length > 1);
+}
+
 /** The result as a short line: the total, or one number per kind. */
 export function resultSummary(spec: RollSpec, r: RollResult): string {
 	if (spec.combine === "separate" && r.groups.length > 1)

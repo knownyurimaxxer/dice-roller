@@ -71,7 +71,10 @@ export const eu: Messages = {
 	"settings.hapticsToggle": "Ukipen-erantzuna",
 	"settings.hapticsHint": "Bibrazio laburrak botatzen duzun bitartean.",
 	"settings.hapticsTriggers": "Aukeratu zerk egiten duen bibrazioa",
-	"settings.motion": "Mugimendua",
+	"settings.gestures": "Keinuak",
+	"settings.swipeToRoll": "Irristatu gora botatzeko",
+	"settings.swipeToRollHint":
+		"Irristatu gorantz pantailako edozein lekutan, aukeratutako dadoak botatzeko.",
 	"settings.throwToRoll": "Jaurti keinu batekin",
 	"settings.throwToRollHint":
 		"Egin jaurtiketa-keinu bat telefonoarekin dadoak jaurtitzeko.",
@@ -80,6 +83,11 @@ export const eu: Messages = {
 		"Altuagoak jaurtiketa leunekin erreakzionatzen du. Baxuagoak jaurtiketa indartsuagoa behar du, nahi gabe aktibatu ez dadin.",
 	"settings.throwLow": "Baxua",
 	"settings.throwHigh": "Altua",
+	"settings.orientation": "Orientazioa",
+	"settings.orientationHint":
+		"Pantaila posizio honetan geratzen da eta ez da inoiz bere kabuz biratzen, beraz telefonoa jaurtitzeak ezin du biratu.",
+	"settings.orientationPortrait": "Bertikala",
+	"settings.orientationLandscape": "Horizontala",
 	"haptics.throw": "Dadoak botatzea",
 	"haptics.clash": "Dadoen talka",
 	"haptics.result": "Emaitza erakustea",

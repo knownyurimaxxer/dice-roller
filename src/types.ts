@@ -1,5 +1,6 @@
 import type { HapticTrigger } from "./constants";
 import type { RollSpec } from "./dice/roll";
+import type { Layout } from "./utils/orientation";
 
 export type Theme = {
 	background: string;
@@ -22,10 +23,14 @@ export type Settings = {
 	hapticsEnabled: boolean;
 	/** Which haptic triggers are on (only used while hapticsEnabled is on). */
 	haptics: Record<HapticTrigger, boolean>;
+	/** Roll the dice with a swipe up anywhere on the screen (off by default). */
+	swipeToRoll: boolean;
 	/** Roll the dice when the phone is thrown (off by default). */
 	throwToRoll: boolean;
 	/** How gentle a throw can be, from 1 (hard) to 10 (gentle). */
 	throwSensitivity: number;
+	/** Which way up the screen stays: it never rotates by itself. */
+	orientation: Layout;
 	/** The dice, mode and combine option that were selected last. */
 	lastSpec: RollSpec;
 };

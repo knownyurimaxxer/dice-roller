@@ -72,7 +72,10 @@ export const es: Messages = {
 	"settings.hapticsToggle": "Respuesta háptica",
 	"settings.hapticsHint": "Vibraciones cortas mientras lanzas.",
 	"settings.hapticsTriggers": "Elige qué vibra",
-	"settings.motion": "Movimiento",
+	"settings.gestures": "Gestos",
+	"settings.swipeToRoll": "Deslizar hacia arriba para lanzar",
+	"settings.swipeToRollHint":
+		"Desliza hacia arriba en cualquier parte de la pantalla para lanzar los dados elegidos.",
 	"settings.throwToRoll": "Lanzar con un gesto",
 	"settings.throwToRollHint":
 		"Haz un gesto de lanzamiento con el móvil para lanzar los dados.",
@@ -81,6 +84,11 @@ export const es: Messages = {
 		"Más alta reacciona a lanzamientos suaves. Más baja exige un lanzamiento más fuerte, para que no se active sin querer.",
 	"settings.throwLow": "Baja",
 	"settings.throwHigh": "Alta",
+	"settings.orientation": "Orientación",
+	"settings.orientationHint":
+		"La pantalla se queda en esta posición y nunca gira sola, así que lanzar el móvil no puede girarla.",
+	"settings.orientationPortrait": "Vertical",
+	"settings.orientationLandscape": "Horizontal",
 	"haptics.throw": "Lanzar los dados",
 	"haptics.clash": "Choque de dados",
 	"haptics.result": "Mostrar el resultado",
