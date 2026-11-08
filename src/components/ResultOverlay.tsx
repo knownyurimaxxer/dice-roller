@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { GroupResult, RollResult, RollSpec } from "../dice/roll";
-import { specLabel } from "../dice/roll";
+import { listedGroups, specLabel } from "../dice/roll";
 import { NUMBER_FONT } from "../constants";
 import { useT } from "../i18n/I18nContext";
 import { useTheme } from "../theme/ThemeContext";
@@ -136,7 +136,7 @@ export default function ResultOverlay({
 
 	const { spec, result, perfect } = shown;
 	const separate = spec.combine === "separate" && result.groups.length > 1;
-	const detail = result.groups.filter((g) => g.values.length > 1);
+	const detail = listedGroups(result);
 	const onBg = readableOn(theme.background);
 
 	return (

@@ -8,6 +8,7 @@ import {
 	favoriteTitle,
 	groupDetail,
 	kindCount,
+	listedGroups,
 	MAX_BODIES,
 	MAX_PER_TYPE,
 	maxPossible,
@@ -411,5 +412,41 @@ describe("advantage and disadvantage pools", () => {
 		expect(
 			evaluate(spec([[20, 4]], "disadvantage"), { 20: [3, 17, 9, 11] }).total,
 		).toBe(3);
+	});
+});
+
+describe("listedGroups", () => {
+	it("lists every kind when several were thrown, even a lone die", () => {
+		const r = evaluate(
+			spec([
+				[6, 2],
+				[20, 1],
+			]),
+			{ 6: [3, 4], 20: [17] },
+		);
+		expect(listedGroups(r).map((g) => g.sides)).toEqual([6, 20]);
+		const three = evaluate(
+			spec([
+				[4, 1],
+				[8, 1],
+				[12, 1],
+			]),
+			{ 4: [2], 8: [5], 12: [9] },
+		);
+		expect(listedGroups(three).map((g) => g.sides)).toEqual([4, 8, 12]);
+	});
+
+	it("lists a single kind only when more than one die was thrown", () => {
+		expect(
+			listedGroups(evaluate(spec([[6, 3]]), { 6: [1, 2, 3] })),
+		).toHaveLength(1);
+		expect(listedGroups(evaluate(spec([[20, 1]]), { 20: [9] }))).toHaveLength(
+			0,
+		);
+	});
+
+	it("lists a pool of advantage dice", () => {
+		const r = evaluate(spec([[20, 2]], "advantage"), { 20: [4, 18] });
+		expect(listedGroups(r)).toHaveLength(1);
 	});
 });
