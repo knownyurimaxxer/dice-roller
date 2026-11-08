@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { DEFAULT_SETTINGS } from "../src/constants";
 import {
 	isSwipeUp,
+	menuBlocksSwipe,
 	SWIPE_MAX_MS,
 	SWIPE_MAX_SIDEWAYS,
 	SWIPE_MIN_DISTANCE,
@@ -50,6 +51,29 @@ describe("isSwipeUp", () => {
 
 	it("ignores a clock that went backwards", () => {
 		expect(isSwipeUp(from, to(0, -300, -10))).toBe(false);
+	});
+});
+
+describe("menuBlocksSwipe", () => {
+	it("lets the swipe roll when the menu has nothing to scroll", () => {
+		expect(menuBlocksSwipe(300, 400, 0)).toBe(false); // content fits
+		expect(menuBlocksSwipe(400, 400, 0)).toBe(false);
+		expect(menuBlocksSwipe(403, 400, 0)).toBe(false); // within the tolerance
+	});
+
+	it("leaves the swipe to the menu while it can still scroll up", () => {
+		expect(menuBlocksSwipe(700, 400, 0)).toBe(true); // at the top
+		expect(menuBlocksSwipe(700, 400, 150)).toBe(true); // in the middle
+	});
+
+	it("lets the swipe roll once the menu is scrolled to its end", () => {
+		expect(menuBlocksSwipe(700, 400, 300)).toBe(false);
+		expect(menuBlocksSwipe(700, 400, 297)).toBe(false); // within the tolerance
+		expect(menuBlocksSwipe(700, 400, 290)).toBe(true);
+	});
+
+	it("knows nothing yet before the menu has been measured", () => {
+		expect(menuBlocksSwipe(0, 0, 0)).toBe(false);
 	});
 });
 
