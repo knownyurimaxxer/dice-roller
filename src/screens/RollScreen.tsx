@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	Animated,
 	Easing,
+	GestureResponderEvent,
 	Pressable,
 	ScrollView,
 	StyleSheet,
@@ -42,6 +43,7 @@ import { useTheme } from "../theme/ThemeContext";
 import { Settings, Theme, UpdateSetting } from "../types";
 import { mixColors, readableOn } from "../utils/format";
 import { haptic } from "../utils/haptics";
+import { isSwipeUp, TouchPoint } from "../utils/swipe";
 import { playClash, playResult, playRoll } from "../utils/sound";
 
 type Props = {
@@ -198,6 +200,32 @@ export default function RollScreen({
 		onThrowGesture,
 	);
 
+	// Swiping up anywhere rolls too. The touches are only watched as they pass
+	// by, never claimed, so buttons, sliders and the menu's scrolling keep
+	// working. A swipe that starts on the menu is for scrolling it, so it is ignored.
+	const swipeFrom = useRef<TouchPoint | null>(null);
+	const touchedMenu = useRef(false);
+	const onTouchStart = (e: GestureResponderEvent) => {
+		const n = e.nativeEvent;
+		const usable = n.touches.length === 1 && !touchedMenu.current;
+		swipeFrom.current = usable
+			? { x: n.pageX, y: n.pageY, t: Date.now() }
+			: null;
+		touchedMenu.current = false;
+	};
+	const onTouchEnd = (e: GestureResponderEvent) => {
+		const from = swipeFrom.current;
+		swipeFrom.current = null;
+		if (!from || !settings.swipeToRoll) return;
+		const n = e.nativeEvent;
+		if (isSwipeUp(from, { x: n.pageX, y: n.pageY, t: Date.now() }))
+			onThrowGesture();
+	};
+	const onTouchMove = (e: GestureResponderEvent) => {
+		// A second finger turns it into something else (a pinch, say).
+		if (e.nativeEvent.touches.length > 1) swipeFrom.current = null;
+	};
+
 	const onSettled = useCallback(
 		(read: number[], plan: Throw[]) => {
 			const p = pending.current;
@@ -264,7 +292,13 @@ export default function RollScreen({
 	});
 
 	return (
-		<View style={s.root}>
+		<View
+			style={s.root}
+			onTouchStart={onTouchStart}
+			onTouchMove={onTouchMove}
+			onTouchEnd={onTouchEnd}
+			onTouchCancel={() => (swipeFrom.current = null)}
+		>
 			{/* The whole screen is the board. */}
 			<DiceBoard
 				ref={board}
@@ -344,6 +378,7 @@ export default function RollScreen({
 			{/* The menu: rolls down out of sight when you roll, and back up to reconfigure. */}
 			<Animated.View
 				pointerEvents={phase === "setup" ? "auto" : "none"}
+				onTouchStart={() => (touchedMenu.current = true)}
 				onLayout={(e) => setMenuHeight(e.nativeEvent.layout.height)}
 				style={[s.menu, { transform: [{ translateY: menuY }] }]}
 			>

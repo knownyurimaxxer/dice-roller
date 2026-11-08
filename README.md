@@ -35,8 +35,9 @@ If you have an issue, just open an [Issue](../../issues)!
   separately switchable in Settings.
 - **Haptics.** Off by default. Turn them on in Settings, then choose which
   moments vibrate: throwing, clashing, the result and button taps.
-- **Gestures.** Off by default. Turn it on in Settings and choose a
-  sensitivity, then roll the dice by throwing the phone.
+- **Gestures.** Both are off by default (Settings > Gestures). Swipe up
+  anywhere on the screen to roll the dice you picked, or throw the phone
+  (you choose how gentle the throw can be).
 - **It never rotates by itself.** Settings > Orientation keeps the screen
   vertical or horizontal, so moving the phone to roll can't turn the screen.
   Vertical is the default.

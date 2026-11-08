@@ -72,7 +72,10 @@ export const gl: Messages = {
 	"settings.hapticsToggle": "Resposta táctil",
 	"settings.hapticsHint": "Vibracións curtas mentres lanzas.",
 	"settings.hapticsTriggers": "Elixe que vibra",
-	"settings.motion": "Movemento",
+	"settings.gestures": "Xestos",
+	"settings.swipeToRoll": "Deslizar cara arriba para lanzar",
+	"settings.swipeToRollHint":
+		"Desliza cara arriba en calquera parte da pantalla para lanzar os dados elixidos.",
 	"settings.throwToRoll": "Lanzar cun xesto",
 	"settings.throwToRollHint":
 		"Fai un xesto de lanzamento co móbil para lanzar os dados.",

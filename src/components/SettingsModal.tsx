@@ -266,11 +266,25 @@ export default function SettingsModal({
 					</View>
 				)}
 
-				{/* motion: roll the dice by throwing the phone */}
+				{/* gestures: swipe up, or throw the phone, to roll the dice */}
 				<Text style={[s.section, { marginTop: 24 }]}>
-					{t("settings.motion")}
+					{t("settings.gestures")}
 				</Text>
 				<View style={s.row}>
+					<View style={{ flex: 1, paddingRight: 12 }}>
+						<Text style={s.rowTitle}>{t("settings.swipeToRoll")}</Text>
+						<Text style={s.rowHint}>{t("settings.swipeToRollHint")}</Text>
+					</View>
+					<Switch
+						value={settings.swipeToRoll}
+						onValueChange={(v) => {
+							update("swipeToRoll", v);
+							if (v) playHaptic("buttons"); // a taste of it
+						}}
+						trackColor={track}
+					/>
+				</View>
+				<View style={[s.row, { marginTop: 12 }]}>
 					<View style={{ flex: 1, paddingRight: 12 }}>
 						<Text style={s.rowTitle}>{t("settings.throwToRoll")}</Text>
 						<Text style={s.rowHint}>{t("settings.throwToRollHint")}</Text>

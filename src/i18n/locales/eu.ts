@@ -71,7 +71,10 @@ export const eu: Messages = {
 	"settings.hapticsToggle": "Ukipen-erantzuna",
 	"settings.hapticsHint": "Bibrazio laburrak botatzen duzun bitartean.",
 	"settings.hapticsTriggers": "Aukeratu zerk egiten duen bibrazioa",
-	"settings.motion": "Mugimendua",
+	"settings.gestures": "Keinuak",
+	"settings.swipeToRoll": "Irristatu gora botatzeko",
+	"settings.swipeToRollHint":
+		"Irristatu gorantz pantailako edozein lekutan, aukeratutako dadoak botatzeko.",
 	"settings.throwToRoll": "Jaurti keinu batekin",
 	"settings.throwToRollHint":
 		"Egin jaurtiketa-keinu bat telefonoarekin dadoak jaurtitzeko.",

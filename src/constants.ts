@@ -129,6 +129,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		HapticTrigger,
 		boolean
 	>,
+	swipeToRoll: false,
 	throwToRoll: false,
 	throwSensitivity: THROW_SENSITIVITY_DEFAULT,
 	orientation: DEFAULT_LAYOUT,

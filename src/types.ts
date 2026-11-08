@@ -23,6 +23,8 @@ export type Settings = {
 	hapticsEnabled: boolean;
 	/** Which haptic triggers are on (only used while hapticsEnabled is on). */
 	haptics: Record<HapticTrigger, boolean>;
+	/** Roll the dice with a swipe up anywhere on the screen (off by default). */
+	swipeToRoll: boolean;
 	/** Roll the dice when the phone is thrown (off by default). */
 	throwToRoll: boolean;
 	/** How gentle a throw can be, from 1 (hard) to 10 (gentle). */

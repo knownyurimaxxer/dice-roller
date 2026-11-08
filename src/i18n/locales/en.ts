@@ -76,7 +76,10 @@ export const en = {
 	"settings.hapticsToggle": "Haptic feedback",
 	"settings.hapticsHint": "Short vibrations while you roll.",
 	"settings.hapticsTriggers": "Choose what vibrates",
-	"settings.motion": "Motion",
+	"settings.gestures": "Gestures",
+	"settings.swipeToRoll": "Swipe up to roll",
+	"settings.swipeToRollHint":
+		"Swipe up anywhere on the screen to roll the dice you picked.",
 	"settings.throwToRoll": "Throw to roll",
 	"settings.throwToRollHint":
 		"Make a throwing motion with your phone to roll the dice.",

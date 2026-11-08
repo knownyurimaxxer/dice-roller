@@ -71,7 +71,10 @@ export const ca: Messages = {
 	"settings.hapticsToggle": "Resposta tàctil",
 	"settings.hapticsHint": "Vibracions curtes mentre llances.",
 	"settings.hapticsTriggers": "Tria què vibra",
-	"settings.motion": "Moviment",
+	"settings.gestures": "Gestos",
+	"settings.swipeToRoll": "Lliscar cap amunt per llançar",
+	"settings.swipeToRollHint":
+		"Llisca cap amunt en qualsevol lloc de la pantalla per llançar els daus triats.",
 	"settings.throwToRoll": "Llançar amb un gest",
 	"settings.throwToRollHint":
 		"Fes un gest de llançament amb el mòbil per llançar els daus.",

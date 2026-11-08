@@ -29,6 +29,7 @@ export function useSettings() {
 						? savedHaptics
 						: {}),
 				},
+				swipeToRoll: get<unknown>("swipeToRoll", false) === true,
 				throwToRoll: get<unknown>("throwToRoll", false) === true,
 				throwSensitivity: clampSensitivity(
 					get<unknown>("throwSensitivity", DEFAULT_SETTINGS.throwSensitivity),

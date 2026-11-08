@@ -72,7 +72,10 @@ export const es: Messages = {
 	"settings.hapticsToggle": "Respuesta háptica",
 	"settings.hapticsHint": "Vibraciones cortas mientras lanzas.",
 	"settings.hapticsTriggers": "Elige qué vibra",
-	"settings.motion": "Movimiento",
+	"settings.gestures": "Gestos",
+	"settings.swipeToRoll": "Deslizar hacia arriba para lanzar",
+	"settings.swipeToRollHint":
+		"Desliza hacia arriba en cualquier parte de la pantalla para lanzar los dados elegidos.",
 	"settings.throwToRoll": "Lanzar con un gesto",
 	"settings.throwToRollHint":
 		"Haz un gesto de lanzamiento con el móvil para lanzar los dados.",

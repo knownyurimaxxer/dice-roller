@@ -72,7 +72,10 @@ export const pt: Messages = {
 	"settings.hapticsToggle": "Resposta háptica",
 	"settings.hapticsHint": "Vibrações curtas enquanto lanças.",
 	"settings.hapticsTriggers": "Escolhe o que vibra",
-	"settings.motion": "Movimento",
+	"settings.gestures": "Gestos",
+	"settings.swipeToRoll": "Deslizar para cima para lançar",
+	"settings.swipeToRollHint":
+		"Desliza para cima em qualquer parte do ecrã para lançar os dados escolhidos.",
 	"settings.throwToRoll": "Lançar com um gesto",
 	"settings.throwToRollHint":
 		"Faz um gesto de lançamento com o telemóvel para lançar os dados.",
