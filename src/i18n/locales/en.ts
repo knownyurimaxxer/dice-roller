@@ -76,6 +76,8 @@ export const en = {
 	"settings.hapticsToggle": "Haptic feedback",
 	"settings.hapticsHint": "Short vibrations while you roll.",
 	"settings.hapticsTriggers": "Choose what vibrates",
+	"settings.hapticsStrength": "Vibration strength",
+	"settings.hapticsStrengthHint": "Swipe right for a more intense vibration.",
 	"settings.gestures": "Gestures",
 	"settings.swipeToRoll": "Swipe up to roll",
 	"settings.swipeToRollHint":
@@ -108,6 +110,20 @@ export const en = {
 	"preset.paper": "Paper",
 	"preset.forest": "Forest",
 	"preset.grape": "Grape",
+	"color.custom": "Custom color",
+	"color.hue": "Hue",
+	"color.saturation": "Saturation",
+	"color.lightness": "Lightness",
+	"color.hex": "Hex code",
+	"color.apply": "Apply",
+	"settings.themeTransfer": "Share themes",
+	"settings.exportTheme": "Export theme",
+	"settings.importTheme": "Import theme",
+	"settings.importHint":
+		"Paste a theme exported from this app or from any app that uses the same color names: background, card, text and accent.",
+	"settings.importInvalid":
+		"That isn't a valid theme. It needs background, card, text and accent, each as a #RRGGBB color.",
+	"settings.importButton": "Import",
 
 	// about
 	"credits.about": "About",

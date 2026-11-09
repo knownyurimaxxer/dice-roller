@@ -71,6 +71,9 @@ export const eu: Messages = {
 	"settings.hapticsToggle": "Ukipen-erantzuna",
 	"settings.hapticsHint": "Bibrazio laburrak botatzen duzun bitartean.",
 	"settings.hapticsTriggers": "Aukeratu zerk egiten duen bibrazioa",
+	"settings.hapticsStrength": "Bibrazioaren indarra",
+	"settings.hapticsStrengthHint":
+		"Irristatu eskuinera bibrazio biziagoa lortzeko.",
 	"settings.gestures": "Keinuak",
 	"settings.swipeToRoll": "Irristatu gora botatzeko",
 	"settings.swipeToRollHint":
@@ -103,6 +106,20 @@ export const eu: Messages = {
 	"preset.paper": "Papera",
 	"preset.forest": "Basoa",
 	"preset.grape": "Mahatsa",
+	"color.custom": "Kolore pertsonalizatua",
+	"color.hue": "Tonua",
+	"color.saturation": "Saturazioa",
+	"color.lightness": "Argitasuna",
+	"color.hex": "Hex kodea",
+	"color.apply": "Aplikatu",
+	"settings.themeTransfer": "Gaiak partekatu",
+	"settings.exportTheme": "Esportatu gaia",
+	"settings.importTheme": "Inportatu gaia",
+	"settings.importHint":
+		"Itsatsi aplikazio honetatik edo kolore-izen berdinak erabiltzen dituen edozein aplikaziotatik esportatutako gai bat: background, card, text eta accent.",
+	"settings.importInvalid":
+		"Hori ez da baliozko gai bat. background, card, text eta accent behar ditu, bakoitza #RRGGBB kolore gisa.",
+	"settings.importButton": "Inportatu",
 
 	// about
 	"credits.about": "Honi buruz",

@@ -71,6 +71,9 @@ export const ca: Messages = {
 	"settings.hapticsToggle": "Resposta tàctil",
 	"settings.hapticsHint": "Vibracions curtes mentre llances.",
 	"settings.hapticsTriggers": "Tria què vibra",
+	"settings.hapticsStrength": "Intensitat de la vibració",
+	"settings.hapticsStrengthHint":
+		"Llisca cap a la dreta per a una vibració més intensa.",
 	"settings.gestures": "Gestos",
 	"settings.swipeToRoll": "Lliscar cap amunt per llançar",
 	"settings.swipeToRollHint":
@@ -103,6 +106,20 @@ export const ca: Messages = {
 	"preset.paper": "Paper",
 	"preset.forest": "Bosc",
 	"preset.grape": "Raïm",
+	"color.custom": "Color personalitzat",
+	"color.hue": "To",
+	"color.saturation": "Saturació",
+	"color.lightness": "Lluminositat",
+	"color.hex": "Codi hex",
+	"color.apply": "Aplica",
+	"settings.themeTransfer": "Compartir temes",
+	"settings.exportTheme": "Exportar tema",
+	"settings.importTheme": "Importar tema",
+	"settings.importHint":
+		"Enganxa un tema exportat des d'aquesta app o des de qualsevol app que faci servir els mateixos noms de color: background, card, text i accent.",
+	"settings.importInvalid":
+		"Aquest no és un tema vàlid. Necessita background, card, text i accent, cadascun com a color #RRGGBB.",
+	"settings.importButton": "Importa",
 
 	// about
 	"credits.about": "Quant a",

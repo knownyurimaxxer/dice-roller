@@ -1,8 +1,10 @@
 import { Fragment, ReactNode, useMemo, useState } from "react";
 import {
 	Linking,
+	Platform,
 	Pressable,
 	ScrollView,
+	Share,
 	StyleSheet,
 	Switch,
 	Text,
@@ -11,6 +13,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import {
 	HAPTIC_LABELS,
+	HAPTIC_STRENGTH,
 	HAPTIC_TRIGGERS,
 	LINKS,
 	PRESET_LABELS,
@@ -23,13 +26,17 @@ import { useI18n } from "../i18n/I18nContext";
 import { useTheme } from "../theme/ThemeContext";
 import { Settings, Theme, UpdateSetting } from "../types";
 import { readableOn } from "../utils/format";
-import { haptic, playHaptic } from "../utils/haptics";
+import { haptic, playHaptic, previewStrength } from "../utils/haptics";
 import type { Layout } from "../utils/orientation";
 import { previewSound } from "../utils/sound";
+import { exportTheme } from "../utils/themeIO";
 import { THROW_SENSITIVITY_MAX, THROW_SENSITIVITY_MIN } from "../utils/throw";
+import ColorPicker from "./ColorPicker";
 import SensitivitySlider from "./SensitivitySlider";
 import Segmented from "./Segmented";
 import Sheet from "./Sheet";
+import StepSlider from "./StepSlider";
+import ThemeImportModal from "./ThemeImportModal";
 
 type Props = {
 	visible: boolean;
@@ -71,6 +78,19 @@ export default function SettingsModal({
 	const roles = Object.keys(SWATCHES) as (keyof Theme)[];
 	const [languagesOpen, setLanguagesOpen] = useState(false);
 	const [hapticsOpen, setHapticsOpen] = useState(false);
+	// Which color role the custom color picker is open for, if any.
+	const [pickerRole, setPickerRole] = useState<keyof Theme | null>(null);
+	const [importOpen, setImportOpen] = useState(false);
+
+	/** Hands the theme to the share sheet (copy it, send it, save it...). */
+	const onExportTheme = async () => {
+		haptic("buttons");
+		try {
+			await Share.share({ message: exportTheme(settings.theme) });
+		} catch (e) {
+			console.warn("Could not share the theme", e);
+		}
+	};
 
 	// "System default" is written in the phone's language (the one it would
 	// switch to), like every other option is written in its own language.
@@ -230,6 +250,24 @@ export default function SettingsModal({
 						trackColor={track}
 					/>
 				</View>
+				{/* strength: Android only (the effects it uses don't exist elsewhere) */}
+				{settings.hapticsEnabled && Platform.OS === "android" && (
+					<View style={[s.rowBlock, { marginTop: 12 }]}>
+						<Text style={s.rowTitle}>{t("settings.hapticsStrength")}</Text>
+						<Text style={[s.rowHint, { marginBottom: 10 }]}>
+							{t("settings.hapticsStrengthHint")}
+						</Text>
+						<StepSlider
+							label={t("settings.hapticsStrength")}
+							value={settings.hapticLevel}
+							max={HAPTIC_STRENGTH.max}
+							onChange={(step) => {
+								update("hapticLevel", step);
+								previewStrength(step); // feel it as you drag
+							}}
+						/>
+					</View>
+				)}
 				{settings.hapticsEnabled && (
 					<View style={[s.langCard, { marginTop: 12 }]}>
 						<Pressable
@@ -406,9 +444,66 @@ export default function SettingsModal({
 									<View style={[s.swatch, { backgroundColor: c }]} />
 								</Pressable>
 							))}
+							{/* A color picked with the color picker isn't one of the
+							    ready-made swatches: show it (selected) in the row. */}
+							{!SWATCHES[role].some(
+								(c) => c.toUpperCase() === settings.theme[role].toUpperCase(),
+							) && (
+								<Pressable
+									accessibilityRole="button"
+									accessibilityState={{ selected: true }}
+									onPress={() => setPickerRole(role)}
+									style={[s.swatchRing, s.swatchRingActive]}
+								>
+									<View
+										style={[
+											s.swatch,
+											{ backgroundColor: settings.theme[role] },
+										]}
+									/>
+								</Pressable>
+							)}
+							<Pressable
+								accessibilityRole="button"
+								accessibilityLabel={t("color.custom")}
+								onPress={() => {
+									haptic("buttons");
+									setPickerRole(role);
+								}}
+								style={({ pressed }) => [s.swatchRing, pressed && s.pressed]}
+							>
+								<View style={[s.swatch, s.pickerSwatch]}>
+									<Ionicons
+										name="color-palette"
+										size={20}
+										color={readableOn(theme.background)}
+									/>
+								</View>
+							</Pressable>
 						</View>
 					</View>
 				))}
+
+				{/* share a theme with other apps that name their colors the same */}
+				<Text style={[s.sectionTitle, { marginTop: 16 }]}>
+					{t("settings.themeTransfer")}
+				</Text>
+				<View style={s.btnRow}>
+					<Pressable style={s.btn} onPress={onExportTheme}>
+						<Text style={s.btnText}>{t("settings.exportTheme")}</Text>
+					</Pressable>
+					<Pressable
+						style={[s.btn, s.btnGhost]}
+						onPress={() => {
+							haptic("buttons");
+							setImportOpen(true);
+						}}
+					>
+						<Text style={[s.btnText, { color: theme.accent }]}>
+							{t("settings.importTheme")}
+						</Text>
+					</Pressable>
+				</View>
 
 				{/* about / credits */}
 				<Text style={[s.section, { marginTop: 24 }]}>{t("credits.about")}</Text>
@@ -440,6 +535,25 @@ export default function SettingsModal({
 					<Text style={[s.outlineBtnText, { color: theme.accent }]}>Ko-fi</Text>
 				</Pressable>
 			</ScrollView>
+			<ColorPicker
+				visible={pickerRole !== null}
+				title={pickerRole ? t(ROLE_LABELS[pickerRole]) : ""}
+				value={pickerRole ? settings.theme[pickerRole] : "#000000"}
+				onApply={(hex) => {
+					if (pickerRole)
+						update("theme", { ...settings.theme, [pickerRole]: hex });
+					setPickerRole(null);
+				}}
+				onClose={() => setPickerRole(null)}
+			/>
+			<ThemeImportModal
+				visible={importOpen}
+				onApply={(imported) => {
+					update("theme", imported);
+					setImportOpen(false);
+				}}
+				onClose={() => setImportOpen(false)}
+			/>
 		</Sheet>
 	);
 }
@@ -526,6 +640,31 @@ const makeStyles = (t: Theme) => {
 			borderRadius: 20,
 			borderWidth: 1,
 			borderColor: "#88888855",
+		},
+		// The button that opens the color picker: an empty circle with a palette.
+		pickerSwatch: {
+			alignItems: "center",
+			justifyContent: "center",
+			borderStyle: "dashed",
+			borderColor: onBg + "88",
+		},
+		// Buttons wrap to the next line, and a long label wraps inside its button.
+		btnRow: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+		btn: {
+			maxWidth: "100%",
+			backgroundColor: t.accent,
+			paddingHorizontal: 16,
+			paddingVertical: 9,
+			borderRadius: 18,
+			borderWidth: 1,
+			borderColor: t.accent,
+		},
+		btnGhost: { backgroundColor: "transparent" },
+		btnText: {
+			color: readableOn(t.accent),
+			fontWeight: "700",
+			fontSize: 14,
+			textAlign: "center",
 		},
 		// Full-width outlined button (Ko-fi); the caller sets the color.
 		outlineBtn: {

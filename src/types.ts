@@ -23,6 +23,8 @@ export type Settings = {
 	hapticsEnabled: boolean;
 	/** Which haptic triggers are on (only used while hapticsEnabled is on). */
 	haptics: Record<HapticTrigger, boolean>;
+	/** How strong the vibration is: 0 (softest) to HAPTIC_STRENGTH.max (the original strength). Android only. */
+	hapticLevel: number;
 	/** Roll the dice with a swipe up anywhere on the screen (off by default). */
 	swipeToRoll: boolean;
 	/** Roll the dice when the phone is thrown (off by default). */

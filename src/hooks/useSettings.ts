@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { DEFAULT_SETTINGS } from "../constants";
+import { DEFAULT_SETTINGS, HAPTIC_STRENGTH } from "../constants";
 import { normalizeSpec } from "../dice/roll";
 import { getAllSettings, setSetting } from "../storage/db";
 import { Settings, UpdateSetting } from "../types";
 import { normalizeLayout } from "../utils/orientation";
+import { clampStep } from "../utils/slider";
 import { clampSensitivity } from "../utils/throw";
 
 export function useSettings() {
@@ -29,6 +30,12 @@ export function useSettings() {
 						? savedHaptics
 						: {}),
 				},
+				// Saved under its own name; a missing or odd value starts at the default.
+				hapticLevel: clampStep(
+					get<unknown>("hapticLevel", DEFAULT_SETTINGS.hapticLevel),
+					HAPTIC_STRENGTH.max,
+					HAPTIC_STRENGTH.default,
+				),
 				swipeToRoll: get<unknown>("swipeToRoll", false) === true,
 				throwToRoll: get<unknown>("throwToRoll", false) === true,
 				throwSensitivity: clampSensitivity(

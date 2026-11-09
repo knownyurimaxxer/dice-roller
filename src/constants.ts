@@ -119,6 +119,12 @@ export const HAPTIC_LABELS: Record<HapticTrigger, MessageKey> = {
 	buttons: "haptics.buttons",
 };
 
+/**
+ * Steps of the vibration-strength slider. 0 is the softest (and the default);
+ * the top step is the app's original vibration.
+ */
+export const HAPTIC_STRENGTH = { min: 0, max: 5, default: 0 } as const;
+
 export const DEFAULT_SETTINGS: Settings = {
 	theme: PRESETS["Navy"],
 	language: "system",
@@ -129,6 +135,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		HapticTrigger,
 		boolean
 	>,
+	hapticLevel: HAPTIC_STRENGTH.default,
 	swipeToRoll: false,
 	throwToRoll: false,
 	throwSensitivity: THROW_SENSITIVITY_DEFAULT,

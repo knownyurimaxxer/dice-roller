@@ -72,6 +72,9 @@ export const pt: Messages = {
 	"settings.hapticsToggle": "Resposta háptica",
 	"settings.hapticsHint": "Vibrações curtas enquanto lanças.",
 	"settings.hapticsTriggers": "Escolhe o que vibra",
+	"settings.hapticsStrength": "Intensidade da vibração",
+	"settings.hapticsStrengthHint":
+		"Deslize para a direita para uma vibração mais intensa.",
 	"settings.gestures": "Gestos",
 	"settings.swipeToRoll": "Deslizar para cima para lançar",
 	"settings.swipeToRollHint":
@@ -104,6 +107,20 @@ export const pt: Messages = {
 	"preset.paper": "Papel",
 	"preset.forest": "Floresta",
 	"preset.grape": "Uva",
+	"color.custom": "Cor personalizada",
+	"color.hue": "Matiz",
+	"color.saturation": "Saturação",
+	"color.lightness": "Luminosidade",
+	"color.hex": "Código hex",
+	"color.apply": "Aplicar",
+	"settings.themeTransfer": "Compartilhar temas",
+	"settings.exportTheme": "Exportar tema",
+	"settings.importTheme": "Importar tema",
+	"settings.importHint":
+		"Cole um tema exportado deste app ou de qualquer app que use os mesmos nomes de cor: background, card, text e accent.",
+	"settings.importInvalid":
+		"Esse não é um tema válido. Ele precisa de background, card, text e accent, cada um como uma cor #RRGGBB.",
+	"settings.importButton": "Importar",
 
 	// about
 	"credits.about": "Sobre",

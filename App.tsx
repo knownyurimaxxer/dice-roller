@@ -48,7 +48,11 @@ export default function App() {
 	const deviceLanguages = useDeviceLanguageTags();
 	// The screen never rotates by itself; wait for the saved choice before locking.
 	useOrientationLock(ready ? settings.orientation : null);
-	configureHaptics(settings.hapticsEnabled, settings.haptics);
+	configureHaptics(
+		settings.hapticsEnabled,
+		settings.haptics,
+		settings.hapticLevel,
+	);
 	configureSound(settings.soundThrow, settings.soundResult);
 	const [fontsReady, setFontsReady] = useState(false);
 	const [screenReady, setScreenReady] = useState(false);
