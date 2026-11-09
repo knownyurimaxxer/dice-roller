@@ -24,11 +24,11 @@ const FEEL: Record<HapticTrigger, () => Promise<void>> = {
  * their lines here.
  */
 const ANDROID_STEPS = [
-	"Clock_Tick",
+	"Virtual_Key",
 	"Keyboard_Tap",
 	"Context_Click",
-	"Virtual_Key",
 	"Long_Press",
+	"Clock_Tick",
 ] as const;
 
 /** Plays one step of the strength scale, for the slider's preview and for the triggers. */
