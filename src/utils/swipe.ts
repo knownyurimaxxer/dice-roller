@@ -23,3 +23,20 @@ export function isSwipeUp(from: TouchPoint, to: TouchPoint): boolean {
 		ms <= SWIPE_MAX_MS
 	);
 }
+
+/**
+ * Whether a swipe that starts on a scrolling panel should be left to the
+ * panel. A swipe up scrolls its content up, so the panel only needs it if it
+ * is taller than what it shows and isn't already at the bottom. Otherwise there
+ * is nothing to scroll, and the swipe can roll the dice.
+ */
+export function menuBlocksSwipe(
+	contentHeight: number,
+	viewHeight: number,
+	scrollY: number,
+	tolerance = 4,
+): boolean {
+	const scrollable = contentHeight > viewHeight + tolerance;
+	const atBottom = scrollY + viewHeight >= contentHeight - tolerance;
+	return scrollable && !atBottom;
+}

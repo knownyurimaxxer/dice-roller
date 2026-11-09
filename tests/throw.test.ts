@@ -116,4 +116,72 @@ describe("ThrowDetector", () => {
 		expect(run(d, push(3.5, 80), 20_000)).toEqual([]);
 		expect(run(d, [...still(500), ...push(3.5, 80)], 30_000)).toHaveLength(1);
 	});
+
+	it("recognizes a throw that starts with a wind-up", () => {
+		const windUp: Reading[] = Array.from({ length: 6 }, () => [-1, 0, 1]);
+		expect(
+			run(det(), [...still(500), ...windUp, ...push(3.5, 80), ...still(300)]),
+		).toHaveLength(1);
+	});
+
+	it("recognizes a throw after a short pause at the end of the wind-up", () => {
+		const windUp: Reading[] = Array.from({ length: 6 }, () => [-1, 0, 1]);
+		expect(
+			run(det(), [
+				...still(500),
+				...windUp,
+				...still(60),
+				...push(3.5, 80),
+				...still(300),
+			]),
+		).toHaveLength(1);
+	});
+
+	it("recognizes a throw by a phone that was already moving a little", () => {
+		// a hand holding the phone up: a restless 0.45 g for a third of a second
+		const fidget: Reading[] = Array.from({ length: 15 }, (_, i) => [
+			i % 2 ? 0.45 : -0.45,
+			0,
+			1,
+		]);
+		expect(
+			run(det(), [...still(400), ...fidget, ...push(3.5, 80), ...still(300)]),
+		).toHaveLength(1);
+	});
+
+	it("recognizes a throw soon after the phone was turned", () => {
+		// flat, then stood upright (the pull of gravity changes direction), then thrown
+		const upright: Reading[] = Array.from({ length: 50 }, () => [1, 0, 0]);
+		const thrown: Reading[] = Array.from({ length: 4 }, () => [4.5, 0, 0]);
+		expect(
+			run(det(), [...still(500), ...upright, ...thrown, ...still(300)]),
+		).toHaveLength(1);
+	});
+
+	it("does not take a single knock for a throw", () => {
+		expect(
+			run(det(), [...still(500), ...push(3.5, THROW_SAMPLE_MS), ...still(300)]),
+		).toEqual([]);
+	});
+
+	it("still recognizes a throw when the sensor reports slowly", () => {
+		// readings 100 ms apart: one reading has to be enough
+		const slow = (readings: Reading[]) => {
+			const d = det();
+			const fired: number[] = [];
+			readings.forEach(([x, y, z], i) => {
+				if (d.push(x, y, z, i * 100)) fired.push(i);
+			});
+			return fired;
+		};
+		const calm: Reading[] = Array.from({ length: 10 }, () => STILL);
+		expect(slow([...calm, [3.5, 0, 1], [3.5, 0, 1], ...calm])).toHaveLength(1);
+	});
+
+	it("does not keep rolling while running, only reacts to the first impact", () => {
+		// ten hard impacts, a third of a second apart
+		const stride: Reading[] = [...push(3.5, 80), ...still(260)];
+		const running = Array.from({ length: 10 }, () => stride).flat();
+		expect(run(det(), [...still(500), ...running])).toHaveLength(1);
+	});
 });

@@ -43,7 +43,7 @@ import { useTheme } from "../theme/ThemeContext";
 import { Settings, Theme, UpdateSetting } from "../types";
 import { mixColors, readableOn } from "../utils/format";
 import { haptic } from "../utils/haptics";
-import { isSwipeUp, TouchPoint } from "../utils/swipe";
+import { isSwipeUp, menuBlocksSwipe, TouchPoint } from "../utils/swipe";
 import { playClash, playResult, playRoll } from "../utils/sound";
 
 type Props = {
@@ -200,18 +200,21 @@ export default function RollScreen({
 		onThrowGesture,
 	);
 
-	// Swiping up anywhere rolls too. The touches are only watched as they pass
-	// by, never claimed, so buttons, sliders and the menu's scrolling keep
-	// working. A swipe that starts on the menu is for scrolling it, so it is ignored.
+	// Swiping up anywhere rolls too, over the board, the result and the menu.
+	// The touches are only watched as they pass by, never claimed, so buttons,
+	// sliders and the menu's scrolling keep working. The one exception: if the
+	// menu is tall enough to scroll (and isn't at its end), a swipe that starts
+	// on it is left to scroll it.
 	const swipeFrom = useRef<TouchPoint | null>(null);
-	const touchedMenu = useRef(false);
+	const menuBlocks = useRef(false);
+	const menuScroll = useRef({ content: 0, view: 0, y: 0 });
 	const onTouchStart = (e: GestureResponderEvent) => {
 		const n = e.nativeEvent;
-		const usable = n.touches.length === 1 && !touchedMenu.current;
+		const usable = n.touches.length === 1 && !menuBlocks.current;
 		swipeFrom.current = usable
 			? { x: n.pageX, y: n.pageY, t: Date.now() }
 			: null;
-		touchedMenu.current = false;
+		menuBlocks.current = false;
 	};
 	const onTouchEnd = (e: GestureResponderEvent) => {
 		const from = swipeFrom.current;
@@ -378,7 +381,11 @@ export default function RollScreen({
 			{/* The menu: rolls down out of sight when you roll, and back up to reconfigure. */}
 			<Animated.View
 				pointerEvents={phase === "setup" ? "auto" : "none"}
-				onTouchStart={() => (touchedMenu.current = true)}
+				onTouchStart={() => {
+					// Runs before the screen's own handler (touches bubble up).
+					const m = menuScroll.current;
+					menuBlocks.current = menuBlocksSwipe(m.content, m.view, m.y);
+				}}
 				onLayout={(e) => setMenuHeight(e.nativeEvent.layout.height)}
 				style={[s.menu, { transform: [{ translateY: menuY }] }]}
 			>
@@ -394,6 +401,16 @@ export default function RollScreen({
 					]}
 					bounces={false}
 					keyboardShouldPersistTaps="handled"
+					scrollEventThrottle={16}
+					onLayout={(e) => {
+						menuScroll.current.view = e.nativeEvent.layout.height;
+					}}
+					onContentSizeChange={(_, h) => {
+						menuScroll.current.content = h;
+					}}
+					onScroll={(e) => {
+						menuScroll.current.y = e.nativeEvent.contentOffset.y;
+					}}
 				>
 					<View style={s.specRow}>
 						<Text style={s.spec} numberOfLines={1}>
