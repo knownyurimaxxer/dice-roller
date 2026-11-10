@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { DICE_FONTS } from "../src/dice/fonts";
 import {
 	buildGeometry,
 	buildLabels,
 	buildMesh,
+	segmentOf,
 	cross,
 	dot,
 	faceValues,
@@ -14,6 +16,7 @@ import {
 	rotate,
 	sub,
 	valueText,
+	type LabelRole,
 	type PhysicalKind,
 } from "../src/dice/geometry";
 
@@ -249,6 +252,36 @@ describe("readFace", () => {
 	});
 });
 
+describe("segmentOf", () => {
+	it("reads the pieces left to right, then top to bottom", () => {
+		// 6 pieces: 3 columns, 2 rows.
+		const first = segmentOf(0, 6);
+		const third = segmentOf(2, 6);
+		const fourth = segmentOf(3, 6);
+		expect(first.u).toBeCloseTo(1 / 6);
+		expect(first.v).toBeCloseTo(1 / 4);
+		expect(third.u).toBeCloseTo(5 / 6);
+		expect(third.v).toBeCloseTo(1 / 4);
+		expect(fourth.u).toBeCloseTo(1 / 6);
+		expect(fourth.v).toBeCloseTo(3 / 4);
+	});
+	it("keeps a piece square on a square picture", () => {
+		expect(segmentOf(0, 6).size).toBeCloseTo(1 / 3);
+		expect(segmentOf(0, 20).size).toBeCloseTo(1 / 5);
+		expect(segmentOf(0, 1).size).toBe(1);
+	});
+	it("stays inside the picture for any index", () => {
+		for (const count of [1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20])
+			for (let i = -1; i <= count + 1; i++) {
+				const c = segmentOf(i, count);
+				expect(c.u - c.size / 2).toBeGreaterThanOrEqual(-1e-9);
+				expect(c.u + c.size / 2).toBeLessThanOrEqual(1 + 1e-9);
+				expect(c.v - c.size / 2).toBeGreaterThanOrEqual(-1e-9);
+				expect(c.v + c.size / 2).toBeLessThanOrEqual(1 + 1e-9);
+			}
+	});
+});
+
 describe("buildMesh", () => {
 	it("makes triangles that fit in 16-bit indices, with numbers drawn after the body", () => {
 		for (const kind of KINDS) {
@@ -263,11 +296,120 @@ describe("buildMesh", () => {
 			expect(vertices).toBeLessThan(65536);
 			expect(m.normals).toHaveLength(m.positions.length);
 			expect(m.colors).toHaveLength(m.positions.length);
+			expect(m.uvs).toHaveLength((m.positions.length / 3) * 2);
 			expect(m.indices.length % 3).toBe(0);
 			expect(m.bodyIndexCount).toBeGreaterThan(0);
 			expect(m.bodyIndexCount).toBeLessThanOrEqual(m.indices.length);
 			expect(Math.max(...m.indices)).toBeLessThan(vertices);
 		}
+	});
+
+	it("fits in 16-bit indices in every number font, for every kind of label", () => {
+		for (const font of DICE_FONTS)
+			for (const kind of KINDS) {
+				const g = buildGeometry(kind);
+				const roles: [number, LabelRole][] =
+					kind === "d10"
+						? [
+								[10, "plain"],
+								[100, "tens"],
+								[100, "units"],
+							]
+						: [[SIDES[kind], "plain"]];
+				for (const [sides, role] of roles) {
+					const m = buildMesh(
+						g,
+						buildLabels(g, sides, role, font),
+						[1, 0, 0],
+						[0, 0, 1],
+						font,
+					);
+					expect(m.positions.length / 3).toBeLessThan(65536);
+				}
+			}
+	});
+
+	it("lays a picture on every face, inside the picture's square", () => {
+		for (const kind of KINDS) {
+			const g = buildGeometry(kind);
+			const m = buildMesh(
+				g,
+				buildLabels(g, SIDES[kind], "plain"),
+				[1, 0, 0],
+				[0, 0, 1],
+			);
+			const bodyVertices =
+				Math.max(...m.indices.slice(0, m.bodyIndexCount)) + 1;
+			for (let i = 0; i < bodyVertices * 2; i++) {
+				expect(m.uvs[i]).toBeGreaterThanOrEqual(-1e-9);
+				expect(m.uvs[i]).toBeLessThanOrEqual(1 + 1e-9);
+			}
+		}
+	});
+
+	it("cuts a picture into one piece per side, each piece in its own cell", () => {
+		for (const kind of KINDS) {
+			const g = buildGeometry(kind);
+			const sides = SIDES[kind];
+			const values = faceValues(g, sides);
+			const m = buildMesh(
+				g,
+				buildLabels(g, sides, "plain"),
+				[1, 0, 0],
+				[0, 0, 1],
+				undefined,
+				values,
+			);
+			const count = Math.max(1, ...values.map((v) => v ?? 0));
+			const cellsUsed = new Set<number>();
+			let vertex = 0;
+			g.faces.forEach((f, i) => {
+				const cell = segmentOf(
+					values[i] === null ? 0 : (values[i] as number) - 1,
+					count,
+				);
+				const half = cell.size / 2;
+				for (let k = 0; k < f.indices.length; k++, vertex++) {
+					const u = m.uvs[vertex * 2];
+					const v = m.uvs[vertex * 2 + 1];
+					expect(u).toBeGreaterThanOrEqual(cell.u - half - 1e-9);
+					expect(u).toBeLessThanOrEqual(cell.u + half + 1e-9);
+					expect(v).toBeGreaterThanOrEqual(cell.v - half - 1e-9);
+					expect(v).toBeLessThanOrEqual(cell.v + half + 1e-9);
+				}
+				cellsUsed.add(
+					Math.round(cell.u * 1000) * 10000 + Math.round(cell.v * 1000),
+				);
+			});
+			// Every piece is used by some face (a d3's opposite faces share one).
+			expect(cellsUsed.size).toBe(count);
+		}
+	});
+
+	it("keeps the whole picture on every face when the pieces are not asked for", () => {
+		const g = buildGeometry("d6");
+		const plain = buildMesh(
+			g,
+			buildLabels(g, 6, "plain"),
+			[1, 0, 0],
+			[0, 0, 1],
+		);
+		const none = buildMesh(
+			g,
+			buildLabels(g, 6, "plain"),
+			[1, 0, 0],
+			[0, 0, 1],
+			undefined,
+			null,
+		);
+		expect(none.uvs).toEqual(plain.uvs);
+		// A cube face is a square: its corners sit at 0.5 +- 0.5/sqrt(2) on each axis.
+		expect(Math.min(...plain.uvs.slice(0, 8))).toBeCloseTo(
+			0.5 - Math.SQRT1_2 / 2,
+		);
+		expect(Math.max(...plain.uvs.slice(0, 8))).toBeCloseTo(
+			0.5 + Math.SQRT1_2 / 2,
+		);
 	});
 
 	it("draws no numbers on the edge of a coin", () => {

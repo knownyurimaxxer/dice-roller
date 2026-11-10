@@ -100,7 +100,7 @@ export const eu: Messages = {
 	"role.background": "Atzeko planoa",
 	"role.card": "Panelak",
 	"role.text": "Testua",
-	"role.accent": "Kontrastea / azentua (dadoak)",
+	"role.accent": "Kontrastea / azentua",
 	"preset.navy": "Itsas urdina",
 	"preset.midnight": "Gauerdia",
 	"preset.paper": "Papera",
@@ -120,6 +120,44 @@ export const eu: Messages = {
 	"settings.importInvalid":
 		"Hori ez da baliozko gai bat. background, card, text eta accent behar ditu, bakoitza #RRGGBB kolore gisa.",
 	"settings.importButton": "Inportatu",
+	"settings.dice": "Dadoak",
+	"dice.transparency": "Gardentasuna",
+	"dice.transparencyHint": "Dadoak zein gardenak diren. %0 opakua da.",
+	"dice.font": "Zenbakien letra-tipoa",
+	"dice.fontHint":
+		"Letra-tipo bakoitza bere pisurik handienean erabiltzen da, zenbakiek lodiera izan dezaten.",
+	"dice.numberColor": "Zenbakien kolorea",
+	"dice.numberColorHint":
+		"Automatikoak zuria edo beltza aukeratzen du, dadoen gainean hobeto irakurtzen dena.",
+	"dice.numberAuto": "Auto",
+	"dice.numbersFollow": "Zenbakiek gardentasuna jarraitzen dute",
+	"dice.numbersFollowHint":
+		"Aktibatuta badago, zenbakiak dadoekin batera gardentzen dira. Bestela, opako geratzen dira.",
+	"dice.image": "Irudia",
+	"dice.imageHint":
+		"Itsatsi irudi baten esteka (https). Aplikazioak zure telefonora deskargatzen du eta dadoen kolorearen gainean jartzen du. Berri bat erabiltzean, zaharra ezabatzen da.",
+	"dice.imagePlaceholder": "https://…",
+	"dice.imageUse": "Erabili irudia",
+	"dice.imageRemove": "Kendu irudia",
+	"dice.imageTransparency": "Irudiaren gardentasuna",
+	"dice.imageSplit": "Irudiaren zati bat aurpegi bakoitzeko",
+	"dice.imageSplitHint":
+		"Desaktibatuta: irudi osoa jartzen da aurpegi guztietan. Aktibatuta: irudia zatitan mozten da eta aurpegi bakoitzak berea erakusten du, zenbakien ordenan.",
+	"dice.downloading": "Deskargatzen…",
+	"dice.errorUrl": "Hori ez da baliozko https esteka bat.",
+	"dice.errorDownload":
+		"Ezin izan da irudi hori deskargatu. Egiaztatu esteka eta konexioa.",
+	"dice.errorTooBig":
+		"Irudi hori handiegia da. Erabili gehienez 8 MB eta alde bakoitzean 4096 pixel dituen bat.",
+	"dice.errorNotImage":
+		"Esteka hori ez da aplikazioak irakur dezakeen irudi bat.",
+	"dice.transfer": "Dadoak partekatu",
+	"dice.export": "Esportatu dadoak",
+	"dice.import": "Inportatu dadoak",
+	"dice.importHint":
+		"Itsatsi aplikazio honetatik esportatutako dadoen ezarpenak. Irudi-esteka badute, irudia deskargatu eta dagoena ordezkatzen du.",
+	"dice.importInvalid":
+		"Hori ez dira baliozko dadoen ezarpenak. Egiaztatu testua eta irudi-esteka, baldin badago, https-rekin hasten dela.",
 
 	// about
 	"credits.about": "Honi buruz",

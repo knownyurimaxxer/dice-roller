@@ -100,7 +100,7 @@ export const ca: Messages = {
 	"role.background": "Fons",
 	"role.card": "Panells",
 	"role.text": "Text",
-	"role.accent": "Contrast / accent (daus)",
+	"role.accent": "Contrast / accent",
 	"preset.navy": "Marí",
 	"preset.midnight": "Mitjanit",
 	"preset.paper": "Paper",
@@ -120,6 +120,44 @@ export const ca: Messages = {
 	"settings.importInvalid":
 		"Aquest no és un tema vàlid. Necessita background, card, text i accent, cadascun com a color #RRGGBB.",
 	"settings.importButton": "Importa",
+	"settings.dice": "Daus",
+	"dice.transparency": "Transparència",
+	"dice.transparencyHint": "Com de transparents són els daus. 0% és opac.",
+	"dice.font": "Tipus de lletra dels números",
+	"dice.fontHint":
+		"Cada tipus de lletra s'usa en el seu pes més gruixut, perquè els números segueixin sent marcats.",
+	"dice.numberColor": "Color dels números",
+	"dice.numberColorHint":
+		"Auto tria blanc o negre, el que es llegeixi millor sobre els daus.",
+	"dice.numberAuto": "Auto",
+	"dice.numbersFollow": "Els números segueixen la transparència",
+	"dice.numbersFollowHint":
+		"Si està activat, els números es tornen transparents juntament amb els daus. Si no, es queden opacs.",
+	"dice.image": "Imatge",
+	"dice.imageHint":
+		"Enganxa un enllaç (https) a una imatge. L'app la baixa al teu telèfon i la posa sobre el color dels daus. Fer servir una de nova esborra l'anterior.",
+	"dice.imagePlaceholder": "https://…",
+	"dice.imageUse": "Usa la imatge",
+	"dice.imageRemove": "Treu la imatge",
+	"dice.imageTransparency": "Transparència de la imatge",
+	"dice.imageSplit": "Un tros de la imatge per cara",
+	"dice.imageSplitHint":
+		"Desactivat: la imatge sencera es col·loca a cada cara. Activat: la imatge es talla en trossos i cada cara mostra el seu, per ordre dels números.",
+	"dice.downloading": "Baixant…",
+	"dice.errorUrl": "Aquest no és un enllaç https vàlid.",
+	"dice.errorDownload":
+		"No s'ha pogut baixar aquesta imatge. Revisa l'enllaç i la connexió.",
+	"dice.errorTooBig":
+		"Aquesta imatge és massa gran. Fes servir una de fins a 8 MB i 4096 píxels per costat.",
+	"dice.errorNotImage":
+		"Aquest enllaç no és una imatge que l'app pugui llegir.",
+	"dice.transfer": "Compartir daus",
+	"dice.export": "Exportar daus",
+	"dice.import": "Importar daus",
+	"dice.importHint":
+		"Enganxa els ajustos de daus exportats des d'aquesta app. Si inclouen un enllaç d'imatge, la imatge es baixa i substitueix l'actual.",
+	"dice.importInvalid":
+		"Aquests no són uns ajustos de daus vàlids. Revisa el text i que l'enllaç d'imatge, si n'hi ha, comenci per https.",
 
 	// about
 	"credits.about": "Quant a",

@@ -7,7 +7,8 @@
  * fills the whole screen, and the dice bounce off the edges of what is visible.
  */
 import type { ExpoWebGLRenderingContext } from "expo-gl";
-import type { Theme } from "../types";
+import type { DiceStyle, Theme } from "../types";
+import { opacityOf } from "../utils/diceStyle";
 import { readableOn } from "../utils/format";
 import { buildFloorMesh } from "./board";
 import {
@@ -21,13 +22,19 @@ import {
 	buildGeometry,
 	buildLabels,
 	buildMesh,
+	faceValues,
 	hexToRgb,
 	physicalKind,
 } from "./geometry";
 import { cameraFor, identity, modelMatrix, type Camera } from "./mat4";
 import { DicePhysics } from "./physics";
 import type { Throw } from "./plan";
-import { Renderer, type DrawItem, type GpuMesh } from "./renderer";
+import {
+	Renderer,
+	type DiceLook,
+	type DrawItem,
+	type GpuMesh,
+} from "./renderer";
 
 export type EngineEvents = {
 	/** Something hit something: strength 0..1, and whether it was a die hitting a die. */
@@ -46,6 +53,8 @@ export class DiceEngine {
 	private bounds: FloorBounds;
 	private floorMesh: GpuMesh;
 	private meshes = new Map<string, GpuMesh>();
+	private texture: WebGLTexture | null = null;
+	private textureUri: string | null = null;
 	private plan: Throw[] = [];
 	private waitingForResult = false;
 	private raf = 0;
@@ -55,6 +64,7 @@ export class DiceEngine {
 	constructor(
 		private gl: ExpoWebGLRenderingContext,
 		private theme: Theme,
+		private style: DiceStyle,
 		private events: EngineEvents,
 		insets: Insets = NO_INSETS,
 	) {
@@ -66,6 +76,7 @@ export class DiceEngine {
 				this.events.onImpact(strength, dieOnDie),
 		});
 		this.floorMesh = this.makeFloor();
+		this.syncTexture();
 		this.draw();
 	}
 
@@ -89,13 +100,19 @@ export class DiceEngine {
 		if (!gpu) {
 			const geometry = buildGeometry(physicalKind(t.sides));
 			const body = this.theme.accent; // every die is exactly the accent color
-			const ink = readableOn(body) === "#FFFFFF" ? "#FFFFFF" : "#101010";
+			// The numbers: the color chosen, or whichever reads best on the dice.
+			const ink =
+				this.style.numberColor ??
+				(readableOn(body) === "#FFFFFF" ? "#FFFFFF" : "#101010");
 			gpu = this.renderer.upload(
 				buildMesh(
 					geometry,
-					buildLabels(geometry, t.sides, t.role),
+					buildLabels(geometry, t.sides, t.role, this.style.numberFont),
 					hexToRgb(body),
 					hexToRgb(ink),
+					this.style.numberFont,
+					// One piece of the picture per number, when the picture is cut up.
+					this.style.imageSplit ? faceValues(geometry, t.sides) : null,
 				),
 			);
 			this.meshes.set(key, gpu);
@@ -106,11 +123,43 @@ export class DiceEngine {
 	setTheme(theme: Theme) {
 		if (this.disposed) return;
 		this.theme = theme;
+		this.rebuild();
+	}
+
+	/** The look of the dice changed (see-through, number color, picture). */
+	setDice(style: DiceStyle) {
+		if (this.disposed) return;
+		this.style = style;
+		this.syncTexture();
+		this.rebuild();
+	}
+
+	/** Remakes everything that was built from the theme or the dice style. */
+	private rebuild() {
 		for (const m of this.meshes.values()) this.renderer.free(m);
 		this.meshes.clear();
 		this.renderer.free(this.floorMesh);
 		this.floorMesh = this.makeFloor();
 		this.draw();
+	}
+
+	/** Keeps the GPU texture in step with the picture file named in the style. */
+	private syncTexture() {
+		const uri = this.style.imageUri;
+		if (uri === this.textureUri) return;
+		if (this.texture) this.renderer.freeTexture(this.texture);
+		this.texture = uri ? this.renderer.loadTexture(uri) : null;
+		this.textureUri = uri;
+	}
+
+	private look(): DiceLook {
+		const bodyAlpha = opacityOf(this.style.transparency);
+		return {
+			bodyAlpha,
+			numberAlpha: this.style.numbersFollowTransparency ? bodyAlpha : 1,
+			texture: this.texture,
+			textureOpacity: opacityOf(this.style.imageTransparency),
+		};
 	}
 
 	/**
@@ -186,12 +235,15 @@ export class DiceEngine {
 			camera: this.camera,
 			board: { mesh: this.floorMesh, model: identity() },
 			dice: items,
+			look: this.look(),
 		});
 		this.gl.endFrameEXP();
 	}
 
 	dispose() {
 		this.disposed = true;
+		if (this.texture) this.renderer.freeTexture(this.texture);
+		this.texture = null;
 		if (this.raf) cancelAnimationFrame(this.raf);
 		this.raf = 0;
 	}

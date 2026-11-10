@@ -12,6 +12,7 @@
  * point away from the die.
  */
 import { textTriangles, textWidth } from "./digits";
+import { DEFAULT_DICE_FONT, type DiceFontId } from "./fonts";
 
 export type V3 = [number, number, number];
 
@@ -467,6 +468,7 @@ export function buildLabels(
 	g: Geometry,
 	sides: number,
 	role: LabelRole,
+	font: DiceFontId = DEFAULT_DICE_FONT,
 ): Label[][] {
 	const values = faceValues(g, sides);
 	return g.faces.map((f, i) => {
@@ -490,7 +492,7 @@ export function buildLabels(
 		}
 		const text = valueText(sides, role, value);
 		const room = f.inradius * (g.kind === "coin" ? 0.8 : 0.95);
-		const fit = (1.5 * f.inradius) / (textWidth(text, 1) || 1); // keep wide numbers on the face
+		const fit = (1.5 * f.inradius) / (textWidth(text, 1, font) || 1); // keep wide numbers on the face
 		return [{ text, x: 0, y: 0, angle: 0, height: Math.min(room, fit) }];
 	});
 }
@@ -501,6 +503,8 @@ export type Mesh = {
 	positions: number[];
 	normals: number[];
 	colors: number[];
+	/** Two numbers per vertex: where in a picture it sits (only the body uses them). */
+	uvs: number[];
 	indices: number[];
 	/** The first indices draw the die's body; the numbers come after. */
 	bodyIndexCount: number;
@@ -508,34 +512,103 @@ export type Mesh = {
 
 export type RGB = [number, number, number];
 
+/**
+ * Where piece `index` (0-based) of a picture cut into `count` pieces lies: the
+ * picture is a grid of cols x rows cells, read left to right, top to bottom.
+ * `u` / `v` are the middle of the cell in the picture (0..1), `size` is how
+ * much of the picture's width and height one face may use inside its cell.
+ * It is the same for both directions, so a face is never stretched on a
+ * square picture.
+ */
+export function segmentOf(
+	index: number,
+	count: number,
+): { u: number; v: number; size: number } {
+	const n = Math.max(1, Math.floor(count));
+	const cols = Math.ceil(Math.sqrt(n));
+	const rows = Math.ceil(n / cols);
+	const k = Math.min(n - 1, Math.max(0, Math.floor(index)));
+	return {
+		u: ((k % cols) + 0.5) / cols,
+		v: (Math.floor(k / cols) + 0.5) / rows,
+		size: Math.min(1 / cols, 1 / rows),
+	};
+}
+
+/**
+ * `segments` (optional) is the number on each face, as `faceValues` gives it.
+ * Given, the picture is cut into one piece per number and every face shows
+ * the piece of its own number (faces with no number, like a coin's edge, take
+ * the first piece). Left out, the whole picture lies on every face.
+ */
 export function buildMesh(
 	g: Geometry,
 	labels: Label[][],
 	body: RGB,
 	ink: RGB,
+	font: DiceFontId = DEFAULT_DICE_FONT,
+	segments: (number | null)[] | null = null,
 ): Mesh {
+	const pieces = segments
+		? Math.max(1, ...segments.map((v) => (v === null ? 0 : v)))
+		: 0;
 	const m: Mesh = {
 		positions: [],
 		normals: [],
 		colors: [],
+		uvs: [],
 		indices: [],
 		bodyIndexCount: 0,
 	};
-	const vertex = (p: V3, n: V3, c: RGB) => {
+	const vertex = (p: V3, n: V3, c: RGB, uv: [number, number] = [0, 0]) => {
 		m.positions.push(p[0], p[1], p[2]);
 		m.normals.push(n[0], n[1], n[2]);
 		m.colors.push(c[0], c[1], c[2]);
+		m.uvs.push(uv[0], uv[1]);
 		return m.positions.length / 3 - 1;
 	};
-	for (const f of g.faces) {
-		const first = vertex(g.vertices[f.indices[0]], f.normal, body);
-		let prev = vertex(g.vertices[f.indices[1]], f.normal, body);
+	g.faces.forEach((f, faceIndex) => {
+		// A picture lies on each face on its own, upright (the same way up as
+		// the number) and centered, with the face's corners inside the picture
+		// (or inside this face's piece of it, when the picture is cut up).
+		const { ex, ey } = faceAxes(f);
+		const value = segments?.[faceIndex] ?? null;
+		const piece = segments
+			? segmentOf(value === null ? 0 : value - 1, pieces)
+			: { u: 0.5, v: 0.5, size: 1 };
+		const reach =
+			Math.max(...f.indices.map((vi) => len(sub(g.vertices[vi], f.center)))) ||
+			1;
+		const at = (vi: number): [number, number] => {
+			const d = sub(g.vertices[vi], f.center);
+			return [
+				piece.u + (dot(d, ex) / (2 * reach)) * piece.size,
+				piece.v - (dot(d, ey) / (2 * reach)) * piece.size,
+			];
+		};
+		const first = vertex(
+			g.vertices[f.indices[0]],
+			f.normal,
+			body,
+			at(f.indices[0]),
+		);
+		let prev = vertex(
+			g.vertices[f.indices[1]],
+			f.normal,
+			body,
+			at(f.indices[1]),
+		);
 		for (let i = 2; i < f.indices.length; i++) {
-			const cur = vertex(g.vertices[f.indices[i]], f.normal, body);
+			const cur = vertex(
+				g.vertices[f.indices[i]],
+				f.normal,
+				body,
+				at(f.indices[i]),
+			);
 			m.indices.push(first, prev, cur);
 			prev = cur;
 		}
-	}
+	});
 	m.bodyIndexCount = m.indices.length;
 	const lift = g.radius * 0.02; // numbers float a hair above the face
 	g.faces.forEach((f, i) => {
@@ -549,7 +622,7 @@ export function buildMesh(
 				const ly = label.y + x * sin + y * cos;
 				return add(base, add(mul(ex, lx), mul(ey, ly)));
 			};
-			for (const tri of textTriangles(label.text, label.height)) {
+			for (const tri of textTriangles(label.text, label.height, font)) {
 				const ids = tri.map(([x, y]) => vertex(place(x, y), f.normal, ink));
 				m.indices.push(ids[0], ids[1], ids[2]);
 			}

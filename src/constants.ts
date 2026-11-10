@@ -1,6 +1,7 @@
 import type { MessageKey } from "./i18n/locales/en";
 import { emptySpec } from "./dice/roll";
 import { Settings, Theme } from "./types";
+import { DEFAULT_DICE_STYLE } from "./utils/diceStyle";
 import { DEFAULT_LAYOUT } from "./utils/orientation";
 import { THROW_SENSITIVITY_DEFAULT } from "./utils/throw";
 
@@ -90,6 +91,18 @@ export const SWATCHES: Record<keyof Theme, string[]> = {
 	],
 };
 
+/** Ready-made colors for the numbers on the dice (the first choice in Settings is "Auto"). */
+export const NUMBER_SWATCHES = [
+	"#FFFFFF",
+	"#101010",
+	"#FFD166",
+	"#FF6B9D",
+	"#00B8FF",
+	"#9BE564",
+	"#B388FF",
+	"#FF8A00",
+];
+
 /** Texts (see i18n) for the color rows in Settings. */
 export const ROLE_LABELS: Record<keyof Theme, MessageKey> = {
 	background: "role.background",
@@ -127,6 +140,7 @@ export const HAPTIC_STRENGTH = { min: 0, max: 5, default: 0 } as const;
 
 export const DEFAULT_SETTINGS: Settings = {
 	theme: PRESETS["Navy"],
+	dice: DEFAULT_DICE_STYLE,
 	language: "system",
 	soundThrow: true,
 	soundResult: true,

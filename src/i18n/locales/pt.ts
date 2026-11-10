@@ -101,7 +101,7 @@ export const pt: Messages = {
 	"role.background": "Fundo",
 	"role.card": "Painéis",
 	"role.text": "Texto",
-	"role.accent": "Contraste / destaque (dados)",
+	"role.accent": "Contraste / destaque",
 	"preset.navy": "Marinho",
 	"preset.midnight": "Meia-noite",
 	"preset.paper": "Papel",
@@ -121,6 +121,43 @@ export const pt: Messages = {
 	"settings.importInvalid":
 		"Esse não é um tema válido. Ele precisa de background, card, text e accent, cada um como uma cor #RRGGBB.",
 	"settings.importButton": "Importar",
+	"settings.dice": "Dados",
+	"dice.transparency": "Transparência",
+	"dice.transparencyHint": "O quanto os dados são transparentes. 0% é opaco.",
+	"dice.font": "Fonte dos números",
+	"dice.fontHint":
+		"Cada fonte é usada no seu peso mais grosso, para que os números continuem marcantes.",
+	"dice.numberColor": "Cor dos números",
+	"dice.numberColorHint":
+		"Auto escolhe branco ou preto, o que ler melhor sobre os dados.",
+	"dice.numberAuto": "Auto",
+	"dice.numbersFollow": "Os números seguem a transparência",
+	"dice.numbersFollowHint":
+		"Quando ativado, os números ficam transparentes junto com os dados. Quando desativado, continuam opacos.",
+	"dice.image": "Imagem",
+	"dice.imageHint":
+		"Cole um link (https) para uma imagem. O app a baixa no seu celular e a coloca sobre a cor dos dados. Usar uma nova apaga a anterior.",
+	"dice.imagePlaceholder": "https://…",
+	"dice.imageUse": "Usar imagem",
+	"dice.imageRemove": "Remover imagem",
+	"dice.imageTransparency": "Transparência da imagem",
+	"dice.imageSplit": "Um pedaço da imagem por face",
+	"dice.imageSplitHint":
+		"Desativado: a imagem inteira é colocada em cada face. Ativado: a imagem é cortada em pedaços e cada face mostra o seu, pela ordem dos números.",
+	"dice.downloading": "Baixando…",
+	"dice.errorUrl": "Esse não é um link https válido.",
+	"dice.errorDownload":
+		"Não foi possível baixar essa imagem. Verifique o link e a conexão.",
+	"dice.errorTooBig":
+		"Essa imagem é grande demais. Use uma de até 8 MB e 4096 pixels por lado.",
+	"dice.errorNotImage": "Esse link não é uma imagem que o app consiga ler.",
+	"dice.transfer": "Compartilhar dados",
+	"dice.export": "Exportar dados",
+	"dice.import": "Importar dados",
+	"dice.importHint":
+		"Cole as configurações de dados exportadas deste app. Se incluírem um link de imagem, a imagem é baixada e substitui a atual.",
+	"dice.importInvalid":
+		"Essas não são configurações de dados válidas. Verifique o texto e se o link da imagem, se houver, começa com https.",
 
 	// about
 	"credits.about": "Sobre",

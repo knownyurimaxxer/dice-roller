@@ -104,7 +104,7 @@ export const en = {
 	"role.background": "Background",
 	"role.card": "Panels",
 	"role.text": "Text",
-	"role.accent": "Contrast / accent (dice)",
+	"role.accent": "Contrast / accent",
 	"preset.navy": "Navy",
 	"preset.midnight": "Midnight",
 	"preset.paper": "Paper",
@@ -124,6 +124,43 @@ export const en = {
 	"settings.importInvalid":
 		"That isn't a valid theme. It needs background, card, text and accent, each as a #RRGGBB color.",
 	"settings.importButton": "Import",
+	"settings.dice": "Dice",
+	"dice.transparency": "Transparency",
+	"dice.transparencyHint": "How see-through the dice are. 0% is solid.",
+	"dice.font": "Number font",
+	"dice.fontHint":
+		"Every font is used in its heaviest weight, so the numbers stay bold.",
+	"dice.numberColor": "Number color",
+	"dice.numberColorHint":
+		"Auto picks black or white, whichever reads best on the dice.",
+	"dice.numberAuto": "Auto",
+	"dice.numbersFollow": "Numbers follow transparency",
+	"dice.numbersFollowHint":
+		"When on, the numbers become see-through along with the dice. When off, they stay solid.",
+	"dice.image": "Image",
+	"dice.imageHint":
+		"Paste a link (https) to a picture. The app downloads it to your phone and lays it over the dice color. Using a new one deletes the old one.",
+	"dice.imagePlaceholder": "https://…",
+	"dice.imageUse": "Use image",
+	"dice.imageRemove": "Remove image",
+	"dice.imageTransparency": "Image transparency",
+	"dice.imageSplit": "One piece of the image per side",
+	"dice.imageSplitHint":
+		"When off, the whole image is laid on every side. When on, the image is cut into pieces and each side shows its own, in number order.",
+	"dice.downloading": "Downloading…",
+	"dice.errorUrl": "That isn't a valid https link.",
+	"dice.errorDownload":
+		"Couldn't download that image. Check the link and your connection.",
+	"dice.errorTooBig":
+		"That image is too big. Use one up to 8 MB and 4096 pixels on each side.",
+	"dice.errorNotImage": "That link isn't a picture the app can read.",
+	"dice.transfer": "Share dice",
+	"dice.export": "Export dice",
+	"dice.import": "Import dice",
+	"dice.importHint":
+		"Paste dice settings exported from this app. If they include an image link, the image is downloaded and replaces the current one.",
+	"dice.importInvalid":
+		"That isn't valid dice settings. Check the text and that any image link starts with https.",
 
 	// about
 	"credits.about": "About",
