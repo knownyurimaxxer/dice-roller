@@ -101,7 +101,7 @@ export const gl: Messages = {
 	"role.background": "Fondo",
 	"role.card": "Paneis",
 	"role.text": "Texto",
-	"role.accent": "Contraste / acento (dados)",
+	"role.accent": "Contraste / acento",
 	"preset.navy": "Mariño",
 	"preset.midnight": "Medianoite",
 	"preset.paper": "Papel",
@@ -121,6 +121,37 @@ export const gl: Messages = {
 	"settings.importInvalid":
 		"Ese non é un tema válido. Precisa background, card, text e accent, cada un como unha cor #RRGGBB.",
 	"settings.importButton": "Importar",
+	"settings.dice": "Dados",
+	"dice.transparency": "Transparencia",
+	"dice.transparencyHint": "Canto de transparentes son os dados. 0% é opaco.",
+	"dice.numberColor": "Cor dos números",
+	"dice.numberColorHint":
+		"Auto escolle branco ou negro, o que mellor se lea sobre os dados.",
+	"dice.numberAuto": "Auto",
+	"dice.numbersFollow": "Os números seguen a transparencia",
+	"dice.numbersFollowHint":
+		"Se está activado, os números volven transparentes xunto cos dados. Se non, quedan opacos.",
+	"dice.image": "Imaxe",
+	"dice.imageHint":
+		"Pega unha ligazón (https) a unha imaxe. A app descárgaa no teu teléfono e ponta sobre a cor dos dados. Usar unha nova borra a anterior.",
+	"dice.imagePlaceholder": "https://…",
+	"dice.imageUse": "Usar a imaxe",
+	"dice.imageRemove": "Quitar a imaxe",
+	"dice.imageTransparency": "Transparencia da imaxe",
+	"dice.downloading": "Descargando…",
+	"dice.errorUrl": "Esa non é unha ligazón https válida.",
+	"dice.errorDownload":
+		"Non se puido descargar esa imaxe. Revisa a ligazón e a conexión.",
+	"dice.errorTooBig":
+		"Esa imaxe é demasiado grande. Usa unha de ata 8 MB e 4096 píxeles por lado.",
+	"dice.errorNotImage": "Esa ligazón non é unha imaxe que a app poida ler.",
+	"dice.transfer": "Compartir dados",
+	"dice.export": "Exportar dados",
+	"dice.import": "Importar dados",
+	"dice.importHint":
+		"Pega os axustes de dados exportados desde esta app. Se inclúen unha ligazón de imaxe, a imaxe descárgase e substitúe a actual.",
+	"dice.importInvalid":
+		"Eses non son uns axustes de dados válidos. Revisa o texto e que a ligazón da imaxe, se a hai, comece por https.",
 
 	// about
 	"credits.about": "Acerca de",

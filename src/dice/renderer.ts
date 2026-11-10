@@ -11,16 +11,19 @@ const LIT_VERT = `
 attribute vec3 aPos;
 attribute vec3 aNormal;
 attribute vec3 aColor;
+attribute vec2 aUV;
 uniform mat4 uViewProj;
 uniform mat4 uModel;
 varying vec3 vColor;
 varying vec3 vNormal;
 varying vec3 vWorld;
+varying vec2 vUV;
 void main() {
   vec4 world = uModel * vec4(aPos, 1.0);
   vWorld = world.xyz;
   vNormal = (uModel * vec4(aNormal, 0.0)).xyz;
   vColor = aColor;
+  vUV = aUV;
   gl_Position = uViewProj * world;
 }`;
 
@@ -33,9 +36,13 @@ precision mediump float;
 varying vec3 vColor;
 varying vec3 vNormal;
 varying vec3 vWorld;
+varying vec2 vUV;
 uniform vec3 uLight;
 uniform vec3 uEye;
 uniform float uSpec;
+uniform sampler2D uTex;
+uniform float uTexOpacity; // 0 = no picture on what is being drawn
+uniform float uAlpha;
 void main() {
   vec3 n = normalize(vNormal);
   float diffuse = max(dot(n, uLight), 0.0);
@@ -43,8 +50,14 @@ void main() {
   vec3 mid = normalize(uLight + toEye);
   float spec = pow(max(dot(n, mid), 0.0), 48.0) * uSpec;
   float sky = 0.5 + 0.5 * n.y;
-  vec3 color = vColor * (0.32 + 0.18 * sky + 0.62 * diffuse) + vec3(spec);
-  gl_FragColor = vec4(color, 1.0);
+  // The picture goes over the color (where the picture itself is see-through, the color shows).
+  vec3 base = vColor;
+  if (uTexOpacity > 0.0) {
+    vec4 tex = texture2D(uTex, vUV);
+    base = mix(base, tex.rgb, tex.a * uTexOpacity);
+  }
+  vec3 color = base * (0.32 + 0.18 * sky + 0.62 * diffuse) + vec3(spec);
+  gl_FragColor = vec4(color, uAlpha);
 }`;
 
 const SHADOW_VERT = `
@@ -58,12 +71,14 @@ void main() {
 
 const SHADOW_FRAG = `
 precision mediump float;
+uniform float uAlpha;
 void main() {
-  gl_FragColor = vec4(0.0, 0.0, 0.0, 0.38);
+  gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
 }`;
 
-/** floats per vertex: position, normal, color */
-const STRIDE = 9 * 4;
+/** floats per vertex: position, normal, color, picture position */
+const FLOATS = 11;
+const STRIDE = FLOATS * 4;
 
 export type GpuMesh = {
 	vbo: WebGLBuffer;
@@ -79,6 +94,26 @@ type Program = {
 };
 
 export type DrawItem = { mesh: GpuMesh; model: Mat4 };
+
+/** How the dice are painted (the shape and the colors are in their meshes). */
+export type DiceLook = {
+	/** 1 = solid, lower = see-through. */
+	bodyAlpha: number;
+	numberAlpha: number;
+	/** The picture laid over the color, and how much of it shows (0..1). */
+	texture: WebGLTexture | null;
+	textureOpacity: number;
+};
+
+export const PLAIN_LOOK: DiceLook = {
+	bodyAlpha: 1,
+	numberAlpha: 1,
+	texture: null,
+	textureOpacity: 0,
+};
+
+/** Shadows stay a little visible even under a nearly invisible die. */
+const SHADOW_ALPHA = 0.38;
 
 /** Where the light comes from (pointing at the light), and so where shadows fall. */
 export const LIGHT: V3 = (() => {
@@ -96,14 +131,23 @@ export class Renderer {
 		this.lit = this.link(
 			LIT_VERT,
 			LIT_FRAG,
-			["aPos", "aNormal", "aColor"],
-			["uViewProj", "uModel", "uLight", "uEye", "uSpec"],
+			["aPos", "aNormal", "aColor", "aUV"],
+			[
+				"uViewProj",
+				"uModel",
+				"uLight",
+				"uEye",
+				"uSpec",
+				"uTex",
+				"uTexOpacity",
+				"uAlpha",
+			],
 		);
 		this.shadow = this.link(
 			SHADOW_VERT,
 			SHADOW_FRAG,
 			["aPos"],
-			["uViewProj", "uModel", "uShadow"],
+			["uViewProj", "uModel", "uShadow", "uAlpha"],
 		);
 	}
 
@@ -143,11 +187,12 @@ export class Renderer {
 		const gl = this.gl;
 		const count = mesh.positions.length / 3;
 		if (count > 65535) throw new Error("Mesh too big for 16-bit indices");
-		const data = new Float32Array(count * 9);
+		const data = new Float32Array(count * FLOATS);
 		for (let i = 0; i < count; i++) {
-			data.set(mesh.positions.slice(i * 3, i * 3 + 3), i * 9);
-			data.set(mesh.normals.slice(i * 3, i * 3 + 3), i * 9 + 3);
-			data.set(mesh.colors.slice(i * 3, i * 3 + 3), i * 9 + 6);
+			data.set(mesh.positions.slice(i * 3, i * 3 + 3), i * FLOATS);
+			data.set(mesh.normals.slice(i * 3, i * 3 + 3), i * FLOATS + 3);
+			data.set(mesh.colors.slice(i * 3, i * 3 + 3), i * FLOATS + 6);
+			data.set(mesh.uvs.slice(i * 2, i * 2 + 2), i * FLOATS + 9);
 		}
 		const vbo = gl.createBuffer();
 		const ibo = gl.createBuffer();
@@ -173,6 +218,42 @@ export class Renderer {
 		this.gl.deleteBuffer(m.ibo);
 	}
 
+	/**
+	 * Loads a picture from a file on the phone as a texture. Returns null when
+	 * it can't be read (the dice are then drawn without it).
+	 */
+	loadTexture(uri: string): WebGLTexture | null {
+		const gl = this.gl;
+		const tex = gl.createTexture();
+		if (!tex) return null;
+		try {
+			gl.bindTexture(gl.TEXTURE_2D, tex);
+			// No mipmaps and clamped edges: works for pictures of any size in WebGL 1.
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+			// expo-gl reads a file given as { localUri }; its typings don't list that form.
+			(
+				gl as unknown as {
+					texImage2D: (...args: unknown[]) => void;
+				}
+			).texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, {
+				localUri: uri,
+			});
+			if (gl.getError() !== gl.NO_ERROR) throw new Error("texImage2D failed");
+			return tex;
+		} catch (e) {
+			console.warn("Could not load the dice picture", e);
+			gl.deleteTexture(tex);
+			return null;
+		}
+	}
+
+	freeTexture(tex: WebGLTexture) {
+		this.gl.deleteTexture(tex);
+	}
+
 	private bind(p: Program, m: GpuMesh, withNormals: boolean) {
 		const gl = this.gl;
 		gl.bindBuffer(gl.ARRAY_BUFFER, m.vbo);
@@ -184,6 +265,8 @@ export class Renderer {
 			gl.vertexAttribPointer(p.attrib.aNormal, 3, gl.FLOAT, false, STRIDE, 12);
 			gl.enableVertexAttribArray(p.attrib.aColor);
 			gl.vertexAttribPointer(p.attrib.aColor, 3, gl.FLOAT, false, STRIDE, 24);
+			gl.enableVertexAttribArray(p.attrib.aUV);
+			gl.vertexAttribPointer(p.attrib.aUV, 2, gl.FLOAT, false, STRIDE, 36);
 		}
 	}
 
@@ -195,9 +278,11 @@ export class Renderer {
 		camera: Camera;
 		board: DrawItem;
 		dice: DrawItem[];
+		look?: DiceLook;
 	}) {
 		const gl = this.gl;
 		const { camera } = opts;
+		const look = opts.look ?? PLAIN_LOOK;
 		gl.viewport(0, 0, opts.width, opts.height);
 		gl.clearColor(opts.clear[0], opts.clear[1], opts.clear[2], 1);
 		gl.clearDepth(1);
@@ -214,6 +299,9 @@ export class Renderer {
 		gl.uniform3f(lit.uniform.uEye, camera.eye[0], camera.eye[1], camera.eye[2]);
 		gl.disable(gl.CULL_FACE);
 		gl.uniform1f(lit.uniform.uSpec, 0);
+		gl.uniform1f(lit.uniform.uAlpha, 1);
+		gl.uniform1f(lit.uniform.uTexOpacity, 0);
+		gl.uniform1i(lit.uniform.uTex, 0);
 		gl.uniformMatrix4fv(lit.uniform.uModel, false, opts.board.model);
 		this.bind(lit, opts.board.mesh, true);
 		gl.drawElements(gl.TRIANGLES, opts.board.mesh.total, gl.UNSIGNED_SHORT, 0);
@@ -225,6 +313,11 @@ export class Renderer {
 			gl.useProgram(sh.program);
 			gl.uniformMatrix4fv(sh.uniform.uViewProj, false, camera.viewProj);
 			gl.uniformMatrix4fv(sh.uniform.uShadow, false, this.shadowM);
+			// A see-through die casts a fainter shadow, never none.
+			gl.uniform1f(
+				sh.uniform.uAlpha,
+				SHADOW_ALPHA * (0.25 + 0.75 * look.bodyAlpha),
+			);
 			gl.depthFunc(gl.LESS);
 			gl.enable(gl.BLEND);
 			gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -239,14 +332,85 @@ export class Renderer {
 
 			// Dice.
 			gl.useProgram(lit.program);
-			gl.enable(gl.CULL_FACE);
-			gl.cullFace(gl.BACK);
 			gl.frontFace(gl.CCW);
 			gl.uniform1f(lit.uniform.uSpec, 0.3);
-			for (const d of opts.dice) {
+			const picture = look.texture !== null && look.textureOpacity > 0;
+			if (picture) {
+				gl.activeTexture(gl.TEXTURE0);
+				gl.bindTexture(gl.TEXTURE_2D, look.texture);
+			}
+			const pictureOpacity = picture ? look.textureOpacity : 0;
+
+			/** One die: the body (with the picture), then its numbers (without). */
+			const drawDie = (d: DrawItem) => {
 				gl.uniformMatrix4fv(lit.uniform.uModel, false, d.model);
 				this.bind(lit, d.mesh, true);
-				gl.drawElements(gl.TRIANGLES, d.mesh.total, gl.UNSIGNED_SHORT, 0);
+				gl.uniform1f(lit.uniform.uAlpha, look.bodyAlpha);
+				gl.uniform1f(lit.uniform.uTexOpacity, pictureOpacity);
+				gl.drawElements(gl.TRIANGLES, d.mesh.bodyCount, gl.UNSIGNED_SHORT, 0);
+				const rest = d.mesh.total - d.mesh.bodyCount;
+				if (rest > 0) {
+					gl.uniform1f(lit.uniform.uAlpha, look.numberAlpha);
+					gl.uniform1f(lit.uniform.uTexOpacity, 0);
+					gl.drawElements(
+						gl.TRIANGLES,
+						rest,
+						gl.UNSIGNED_SHORT,
+						d.mesh.bodyCount * 2, // byte offset: 2 bytes per index
+					);
+				}
+			};
+
+			gl.enable(gl.CULL_FACE);
+			if (look.bodyAlpha >= 1 && look.numberAlpha >= 1) {
+				// Solid dice: just the faces that look at the camera.
+				gl.cullFace(gl.BACK);
+				for (const d of opts.dice) drawDie(d);
+			} else {
+				// See-through dice, far to near (so nearer ones blend over farther
+				// ones). Each die is drawn twice: first the inside of its far side,
+				// numbers included, then the near side over it. The alpha of the
+				// screen itself is left alone.
+				const dist = (d: DrawItem) =>
+					(d.model[12] - camera.eye[0]) ** 2 +
+					(d.model[13] - camera.eye[1]) ** 2 +
+					(d.model[14] - camera.eye[2]) ** 2;
+				const sorted = [...opts.dice].sort((a, b) => dist(b) - dist(a));
+				gl.enable(gl.BLEND);
+				gl.blendFuncSeparate(
+					gl.SRC_ALPHA,
+					gl.ONE_MINUS_SRC_ALPHA,
+					gl.ZERO,
+					gl.ONE,
+				);
+				for (const d of sorted) {
+					gl.cullFace(gl.FRONT); // the far side, seen from inside
+					gl.uniformMatrix4fv(lit.uniform.uModel, false, d.model);
+					this.bind(lit, d.mesh, true);
+					gl.uniform1f(lit.uniform.uAlpha, look.bodyAlpha);
+					gl.uniform1f(lit.uniform.uTexOpacity, pictureOpacity);
+					gl.drawElements(gl.TRIANGLES, d.mesh.bodyCount, gl.UNSIGNED_SHORT, 0);
+					// Numbers on the far side sit just outside it, so they would fail
+					// the depth test against it: draw them regardless of depth.
+					const rest = d.mesh.total - d.mesh.bodyCount;
+					if (rest > 0) {
+						gl.depthFunc(gl.ALWAYS);
+						gl.depthMask(false);
+						gl.uniform1f(lit.uniform.uAlpha, look.numberAlpha);
+						gl.uniform1f(lit.uniform.uTexOpacity, 0);
+						gl.drawElements(
+							gl.TRIANGLES,
+							rest,
+							gl.UNSIGNED_SHORT,
+							d.mesh.bodyCount * 2,
+						);
+						gl.depthMask(true);
+						gl.depthFunc(gl.LEQUAL);
+					}
+					gl.cullFace(gl.BACK); // the near side, over it
+					drawDie(d);
+				}
+				gl.disable(gl.BLEND);
 			}
 			gl.disable(gl.CULL_FACE);
 		}

@@ -32,6 +32,7 @@ function addBox(m: Mesh, lo: V3, hi: V3, color: RGB) {
 				m.positions.push(p[0], p[1], p[2]);
 				m.normals.push(n[0], n[1], n[2]);
 				m.colors.push(color[0], color[1], color[2]);
+				m.uvs.push(0, 0);
 			}
 			m.indices.push(first, first + 1, first + 2, first, first + 2, first + 3);
 		}
@@ -43,6 +44,7 @@ export function buildFloorMesh(color: RGB): Mesh {
 		positions: [],
 		normals: [],
 		colors: [],
+		uvs: [],
 		indices: [],
 		bodyIndexCount: 0,
 	};

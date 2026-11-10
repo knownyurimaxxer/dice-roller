@@ -501,6 +501,8 @@ export type Mesh = {
 	positions: number[];
 	normals: number[];
 	colors: number[];
+	/** Two numbers per vertex: where in a picture it sits (only the body uses them). */
+	uvs: number[];
 	indices: number[];
 	/** The first indices draw the die's body; the numbers come after. */
 	bodyIndexCount: number;
@@ -518,20 +520,47 @@ export function buildMesh(
 		positions: [],
 		normals: [],
 		colors: [],
+		uvs: [],
 		indices: [],
 		bodyIndexCount: 0,
 	};
-	const vertex = (p: V3, n: V3, c: RGB) => {
+	const vertex = (p: V3, n: V3, c: RGB, uv: [number, number] = [0, 0]) => {
 		m.positions.push(p[0], p[1], p[2]);
 		m.normals.push(n[0], n[1], n[2]);
 		m.colors.push(c[0], c[1], c[2]);
+		m.uvs.push(uv[0], uv[1]);
 		return m.positions.length / 3 - 1;
 	};
 	for (const f of g.faces) {
-		const first = vertex(g.vertices[f.indices[0]], f.normal, body);
-		let prev = vertex(g.vertices[f.indices[1]], f.normal, body);
+		// A picture lies on each face on its own, upright (the same way up as
+		// the number) and centered, with the face's corners inside the picture.
+		const { ex, ey } = faceAxes(f);
+		const reach =
+			Math.max(...f.indices.map((vi) => len(sub(g.vertices[vi], f.center)))) ||
+			1;
+		const at = (vi: number): [number, number] => {
+			const d = sub(g.vertices[vi], f.center);
+			return [0.5 + dot(d, ex) / (2 * reach), 0.5 - dot(d, ey) / (2 * reach)];
+		};
+		const first = vertex(
+			g.vertices[f.indices[0]],
+			f.normal,
+			body,
+			at(f.indices[0]),
+		);
+		let prev = vertex(
+			g.vertices[f.indices[1]],
+			f.normal,
+			body,
+			at(f.indices[1]),
+		);
 		for (let i = 2; i < f.indices.length; i++) {
-			const cur = vertex(g.vertices[f.indices[i]], f.normal, body);
+			const cur = vertex(
+				g.vertices[f.indices[i]],
+				f.normal,
+				body,
+				at(f.indices[i]),
+			);
 			m.indices.push(first, prev, cur);
 			prev = cur;
 		}

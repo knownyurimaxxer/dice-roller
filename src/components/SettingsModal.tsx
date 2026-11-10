@@ -32,6 +32,7 @@ import { previewSound } from "../utils/sound";
 import { exportTheme } from "../utils/themeIO";
 import { THROW_SENSITIVITY_MAX, THROW_SENSITIVITY_MIN } from "../utils/throw";
 import ColorPicker from "./ColorPicker";
+import DiceSection from "./DiceSection";
 import SensitivitySlider from "./SensitivitySlider";
 import Segmented from "./Segmented";
 import Sheet from "./Sheet";
@@ -504,6 +505,9 @@ export default function SettingsModal({
 						</Text>
 					</Pressable>
 				</View>
+
+				{/* dice: see-through, number color, picture (and sharing them) */}
+				<DiceSection settings={settings} update={update} />
 
 				{/* about / credits */}
 				<Text style={[s.section, { marginTop: 24 }]}>{t("credits.about")}</Text>

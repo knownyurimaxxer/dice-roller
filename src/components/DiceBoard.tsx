@@ -10,7 +10,7 @@ import { ExpoWebGLRenderingContext, GLView } from "expo-gl";
 import type { Insets } from "../dice/bounds";
 import { DiceEngine, EngineEvents } from "../dice/engine";
 import type { Throw } from "../dice/plan";
-import { Theme } from "../types";
+import { DiceStyle, Theme } from "../types";
 
 export type DiceBoardHandle = {
 	/**
@@ -25,6 +25,8 @@ export type DiceBoardHandle = {
 type Props = {
 	ref?: Ref<DiceBoardHandle>;
 	theme: Theme;
+	/** How the dice look: see-through, number color, picture. */
+	dice: DiceStyle;
 	/**
 	 * The parts of the screen the dice must stay out of (the header, where the
 	 * buttons are...), in dp. The dice bounce off these lines.
@@ -44,6 +46,7 @@ type Props = {
 export default function DiceBoard({
 	ref,
 	theme,
+	dice,
 	keepClear,
 	onImpact,
 	onSettled,
@@ -55,13 +58,21 @@ export default function DiceBoard({
 	const size = useRef({ width: 0, height: 0 });
 	const latest = useRef({
 		theme,
+		dice,
 		keepClear,
 		onImpact,
 		onSettled,
 		onUnavailable,
 	});
 	useEffect(() => {
-		latest.current = { theme, keepClear, onImpact, onSettled, onUnavailable };
+		latest.current = {
+			theme,
+			dice,
+			keepClear,
+			onImpact,
+			onSettled,
+			onUnavailable,
+		};
 	});
 
 	/** The clear areas as fractions of the surface (what the engine works with). */
@@ -103,6 +114,10 @@ export default function DiceBoard({
 		engine.current?.setTheme(theme);
 	}, [theme]);
 
+	useEffect(() => {
+		engine.current?.setDice(dice);
+	}, [dice]);
+
 	const { top, bottom, left, right } = keepClear;
 	useEffect(() => {
 		engine.current?.setLayout(fractions());
@@ -122,6 +137,7 @@ export default function DiceBoard({
 				engine.current = new DiceEngine(
 					gl,
 					latest.current.theme,
+					latest.current.dice,
 					{
 						onImpact: (strength, dieOnDie) =>
 							latest.current.onImpact(strength, dieOnDie),

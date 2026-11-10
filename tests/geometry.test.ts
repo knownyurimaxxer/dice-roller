@@ -263,10 +263,29 @@ describe("buildMesh", () => {
 			expect(vertices).toBeLessThan(65536);
 			expect(m.normals).toHaveLength(m.positions.length);
 			expect(m.colors).toHaveLength(m.positions.length);
+			expect(m.uvs).toHaveLength((m.positions.length / 3) * 2);
 			expect(m.indices.length % 3).toBe(0);
 			expect(m.bodyIndexCount).toBeGreaterThan(0);
 			expect(m.bodyIndexCount).toBeLessThanOrEqual(m.indices.length);
 			expect(Math.max(...m.indices)).toBeLessThan(vertices);
+		}
+	});
+
+	it("lays a picture on every face, inside the picture's square", () => {
+		for (const kind of KINDS) {
+			const g = buildGeometry(kind);
+			const m = buildMesh(
+				g,
+				buildLabels(g, SIDES[kind], "plain"),
+				[1, 0, 0],
+				[0, 0, 1],
+			);
+			const bodyVertices =
+				Math.max(...m.indices.slice(0, m.bodyIndexCount)) + 1;
+			for (let i = 0; i < bodyVertices * 2; i++) {
+				expect(m.uvs[i]).toBeGreaterThanOrEqual(-1e-9);
+				expect(m.uvs[i]).toBeLessThanOrEqual(1 + 1e-9);
+			}
 		}
 	});
 

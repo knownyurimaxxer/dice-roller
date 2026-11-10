@@ -306,6 +306,7 @@ export default function RollScreen({
 			<DiceBoard
 				ref={board}
 				theme={theme}
+				dice={settings.dice}
 				keepClear={keepClear}
 				onImpact={onImpact}
 				onSettled={onSettled}

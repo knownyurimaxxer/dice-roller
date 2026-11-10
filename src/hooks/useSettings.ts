@@ -4,6 +4,7 @@ import { normalizeSpec } from "../dice/roll";
 import { getAllSettings, setSetting } from "../storage/db";
 import { Settings, UpdateSetting } from "../types";
 import { normalizeLayout } from "../utils/orientation";
+import { normalizeDiceStyle } from "../utils/diceStyle";
 import { clampStep } from "../utils/slider";
 import { clampSensitivity } from "../utils/throw";
 
@@ -19,6 +20,7 @@ export function useSettings() {
 			const savedHaptics = get<unknown>("haptics", null);
 			setSettings({
 				theme: { ...DEFAULT_SETTINGS.theme, ...get("theme", {}) },
+				dice: normalizeDiceStyle(get<unknown>("dice", null)),
 				language: get("language", DEFAULT_SETTINGS.language),
 				soundThrow: get("soundThrow", DEFAULT_SETTINGS.soundThrow),
 				soundResult: get("soundResult", DEFAULT_SETTINGS.soundResult),

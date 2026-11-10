@@ -101,7 +101,7 @@ export const es: Messages = {
 	"role.background": "Fondo",
 	"role.card": "Paneles",
 	"role.text": "Texto",
-	"role.accent": "Contraste / acento (dados)",
+	"role.accent": "Contraste / acento",
 	"preset.navy": "Marino",
 	"preset.midnight": "Medianoche",
 	"preset.paper": "Papel",
@@ -121,6 +121,37 @@ export const es: Messages = {
 	"settings.importInvalid":
 		"Ese no es un tema válido. Necesita background, card, text y accent, cada uno como un color #RRGGBB.",
 	"settings.importButton": "Importar",
+	"settings.dice": "Dados",
+	"dice.transparency": "Transparencia",
+	"dice.transparencyHint": "Lo transparentes que son los dados. 0% es opaco.",
+	"dice.numberColor": "Color de los números",
+	"dice.numberColorHint":
+		"Auto elige blanco o negro, el que mejor se lea sobre los dados.",
+	"dice.numberAuto": "Auto",
+	"dice.numbersFollow": "Los números siguen la transparencia",
+	"dice.numbersFollowHint":
+		"Si está activado, los números se vuelven transparentes junto con los dados. Si no, se quedan opacos.",
+	"dice.image": "Imagen",
+	"dice.imageHint":
+		"Pega un enlace (https) a una imagen. La app la descarga a tu teléfono y la pone sobre el color de los dados. Usar una nueva borra la anterior.",
+	"dice.imagePlaceholder": "https://…",
+	"dice.imageUse": "Usar imagen",
+	"dice.imageRemove": "Quitar imagen",
+	"dice.imageTransparency": "Transparencia de la imagen",
+	"dice.downloading": "Descargando…",
+	"dice.errorUrl": "Ese no es un enlace https válido.",
+	"dice.errorDownload":
+		"No se pudo descargar esa imagen. Revisa el enlace y tu conexión.",
+	"dice.errorTooBig":
+		"Esa imagen es demasiado grande. Usa una de hasta 8 MB y 4096 píxeles por lado.",
+	"dice.errorNotImage": "Ese enlace no es una imagen que la app pueda leer.",
+	"dice.transfer": "Compartir dados",
+	"dice.export": "Exportar dados",
+	"dice.import": "Importar dados",
+	"dice.importHint":
+		"Pega los ajustes de dados exportados desde esta app. Si incluyen un enlace de imagen, la imagen se descarga y sustituye a la actual.",
+	"dice.importInvalid":
+		"Esos no son unos ajustes de dados válidos. Revisa el texto y que el enlace de imagen, si lo hay, empiece por https.",
 
 	// about
 	"credits.about": "Acerca de",
