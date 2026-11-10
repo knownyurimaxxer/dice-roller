@@ -140,6 +140,9 @@ export const eu: Messages = {
 	"dice.imageUse": "Erabili irudia",
 	"dice.imageRemove": "Kendu irudia",
 	"dice.imageTransparency": "Irudiaren gardentasuna",
+	"dice.imageSplit": "Irudiaren zati bat aurpegi bakoitzeko",
+	"dice.imageSplitHint":
+		"Desaktibatuta: irudi osoa jartzen da aurpegi guztietan. Aktibatuta: irudia zatitan mozten da eta aurpegi bakoitzak berea erakusten du, zenbakien ordenan.",
 	"dice.downloading": "Deskargatzen…",
 	"dice.errorUrl": "Hori ez da baliozko https esteka bat.",
 	"dice.errorDownload":

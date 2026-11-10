@@ -51,7 +51,9 @@ If you have an issue, just open an [Issue](../../issues)!
   Italic, all in their heaviest weight), the color of the numbers (and whether
   they turn transparent too), and lay
   a picture over the dice color from an https link. The app downloads its own
-  copy and deletes the previous one when you use a new picture. The dice
+  copy and deletes the previous one when you use a new picture. By default the
+  whole picture lies on every side; a switch cuts it into one piece per side
+  instead (in number order), so each side shows its own piece. The dice
   settings have their own export / import, separate from the theme's (the
   picture travels as its link, and is downloaded again on import).
 - **Big screens too.** It works in landscape and on tablets.

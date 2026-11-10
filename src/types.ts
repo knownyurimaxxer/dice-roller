@@ -28,6 +28,11 @@ export type DiceStyle = {
 	imageUri: string | null;
 	/** How see-through the picture is, in percent: 0 (fully visible) to 90. */
 	imageTransparency: number;
+	/**
+	 * false: the whole picture lies on every side. true: the picture is cut into
+	 * one piece per side (in number order) and each side shows only its own.
+	 */
+	imageSplit: boolean;
 };
 
 export type Settings = {

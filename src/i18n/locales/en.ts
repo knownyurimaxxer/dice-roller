@@ -144,6 +144,9 @@ export const en = {
 	"dice.imageUse": "Use image",
 	"dice.imageRemove": "Remove image",
 	"dice.imageTransparency": "Image transparency",
+	"dice.imageSplit": "One piece of the image per side",
+	"dice.imageSplitHint":
+		"When off, the whole image is laid on every side. When on, the image is cut into pieces and each side shows its own, in number order.",
 	"dice.downloading": "Downloading…",
 	"dice.errorUrl": "That isn't a valid https link.",
 	"dice.errorDownload":

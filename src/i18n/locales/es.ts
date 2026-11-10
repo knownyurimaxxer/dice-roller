@@ -141,6 +141,9 @@ export const es: Messages = {
 	"dice.imageUse": "Usar imagen",
 	"dice.imageRemove": "Quitar imagen",
 	"dice.imageTransparency": "Transparencia de la imagen",
+	"dice.imageSplit": "Un trozo de la imagen por cara",
+	"dice.imageSplitHint":
+		"Desactivado: la imagen entera se coloca en cada cara. Activado: la imagen se corta en trozos y cada cara muestra el suyo, en el orden de los números.",
 	"dice.downloading": "Descargando…",
 	"dice.errorUrl": "Ese no es un enlace https válido.",
 	"dice.errorDownload":

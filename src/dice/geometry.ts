@@ -512,13 +512,46 @@ export type Mesh = {
 
 export type RGB = [number, number, number];
 
+/**
+ * Where piece `index` (0-based) of a picture cut into `count` pieces lies: the
+ * picture is a grid of cols x rows cells, read left to right, top to bottom.
+ * `u` / `v` are the middle of the cell in the picture (0..1), `size` is how
+ * much of the picture's width and height one face may use inside its cell.
+ * It is the same for both directions, so a face is never stretched on a
+ * square picture.
+ */
+export function segmentOf(
+	index: number,
+	count: number,
+): { u: number; v: number; size: number } {
+	const n = Math.max(1, Math.floor(count));
+	const cols = Math.ceil(Math.sqrt(n));
+	const rows = Math.ceil(n / cols);
+	const k = Math.min(n - 1, Math.max(0, Math.floor(index)));
+	return {
+		u: ((k % cols) + 0.5) / cols,
+		v: (Math.floor(k / cols) + 0.5) / rows,
+		size: Math.min(1 / cols, 1 / rows),
+	};
+}
+
+/**
+ * `segments` (optional) is the number on each face, as `faceValues` gives it.
+ * Given, the picture is cut into one piece per number and every face shows
+ * the piece of its own number (faces with no number, like a coin's edge, take
+ * the first piece). Left out, the whole picture lies on every face.
+ */
 export function buildMesh(
 	g: Geometry,
 	labels: Label[][],
 	body: RGB,
 	ink: RGB,
 	font: DiceFontId = DEFAULT_DICE_FONT,
+	segments: (number | null)[] | null = null,
 ): Mesh {
+	const pieces = segments
+		? Math.max(1, ...segments.map((v) => (v === null ? 0 : v)))
+		: 0;
 	const m: Mesh = {
 		positions: [],
 		normals: [],
@@ -534,16 +567,24 @@ export function buildMesh(
 		m.uvs.push(uv[0], uv[1]);
 		return m.positions.length / 3 - 1;
 	};
-	for (const f of g.faces) {
+	g.faces.forEach((f, faceIndex) => {
 		// A picture lies on each face on its own, upright (the same way up as
-		// the number) and centered, with the face's corners inside the picture.
+		// the number) and centered, with the face's corners inside the picture
+		// (or inside this face's piece of it, when the picture is cut up).
 		const { ex, ey } = faceAxes(f);
+		const value = segments?.[faceIndex] ?? null;
+		const piece = segments
+			? segmentOf(value === null ? 0 : value - 1, pieces)
+			: { u: 0.5, v: 0.5, size: 1 };
 		const reach =
 			Math.max(...f.indices.map((vi) => len(sub(g.vertices[vi], f.center)))) ||
 			1;
 		const at = (vi: number): [number, number] => {
 			const d = sub(g.vertices[vi], f.center);
-			return [0.5 + dot(d, ex) / (2 * reach), 0.5 - dot(d, ey) / (2 * reach)];
+			return [
+				piece.u + (dot(d, ex) / (2 * reach)) * piece.size,
+				piece.v - (dot(d, ey) / (2 * reach)) * piece.size,
+			];
 		};
 		const first = vertex(
 			g.vertices[f.indices[0]],
@@ -567,7 +608,7 @@ export function buildMesh(
 			m.indices.push(first, prev, cur);
 			prev = cur;
 		}
-	}
+	});
 	m.bodyIndexCount = m.indices.length;
 	const lift = g.radius * 0.02; // numbers float a hair above the face
 	g.faces.forEach((f, i) => {

@@ -1,10 +1,15 @@
 import { useMemo } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { DICE_FONT_FAMILIES } from "../dice/fonts";
+import { segmentOf } from "../dice/geometry";
 import { useTheme } from "../theme/ThemeContext";
 import { DiceStyle, Theme } from "../types";
 import { opacityOf } from "../utils/diceStyle";
 import { readableOn } from "../utils/format";
+
+/** The sketch shows the die with the highest number of a d20. */
+const SKETCH_SIDES = 20;
+const DIE_SIZE = 72;
 
 type Props = {
 	style: Pick<
@@ -14,6 +19,7 @@ type Props = {
 		| "numberColor"
 		| "numbersFollowTransparency"
 		| "imageTransparency"
+		| "imageSplit"
 	> & { imageUri?: string | null };
 };
 
@@ -28,6 +34,10 @@ export default function DicePreview({ style }: Props) {
 	const body = opacityOf(style.transparency);
 	const ink = style.numberColor ?? readableOn(theme.accent);
 	const family = DICE_FONT_FAMILIES[style.numberFont];
+	// Cut-up picture: show the piece that belongs to this die's number.
+	const piece = style.imageSplit
+		? segmentOf(SKETCH_SIDES - 1, SKETCH_SIDES)
+		: null;
 	return (
 		<View style={s.board} accessibilityElementsHidden>
 			<View style={s.die}>
@@ -35,7 +45,20 @@ export default function DicePreview({ style }: Props) {
 					<View
 						style={[StyleSheet.absoluteFill, { backgroundColor: theme.accent }]}
 					/>
-					{style.imageUri ? (
+					{style.imageUri && piece ? (
+						<Image
+							source={{ uri: style.imageUri }}
+							resizeMode="stretch"
+							style={{
+								position: "absolute",
+								width: DIE_SIZE / piece.size,
+								height: DIE_SIZE / piece.size,
+								left: DIE_SIZE / 2 - (piece.u * DIE_SIZE) / piece.size,
+								top: DIE_SIZE / 2 - (piece.v * DIE_SIZE) / piece.size,
+								opacity: opacityOf(style.imageTransparency),
+							}}
+						/>
+					) : style.imageUri ? (
 						<Image
 							source={{ uri: style.imageUri }}
 							resizeMode="cover"
@@ -78,8 +101,8 @@ const makeStyles = (t: Theme) =>
 			borderColor: t.text + "22",
 		},
 		die: {
-			width: 72,
-			height: 72,
+			width: DIE_SIZE,
+			height: DIE_SIZE,
 			borderRadius: 14,
 			overflow: "hidden",
 			alignItems: "center",

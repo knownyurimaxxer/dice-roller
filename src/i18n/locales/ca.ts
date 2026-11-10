@@ -140,6 +140,9 @@ export const ca: Messages = {
 	"dice.imageUse": "Usa la imatge",
 	"dice.imageRemove": "Treu la imatge",
 	"dice.imageTransparency": "Transparència de la imatge",
+	"dice.imageSplit": "Un tros de la imatge per cara",
+	"dice.imageSplitHint":
+		"Desactivat: la imatge sencera es col·loca a cada cara. Activat: la imatge es talla en trossos i cada cara mostra el seu, per ordre dels números.",
 	"dice.downloading": "Baixant…",
 	"dice.errorUrl": "Aquest no és un enllaç https vàlid.",
 	"dice.errorDownload":

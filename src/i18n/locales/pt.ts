@@ -141,6 +141,9 @@ export const pt: Messages = {
 	"dice.imageUse": "Usar imagem",
 	"dice.imageRemove": "Remover imagem",
 	"dice.imageTransparency": "Transparência da imagem",
+	"dice.imageSplit": "Um pedaço da imagem por face",
+	"dice.imageSplitHint":
+		"Desativado: a imagem inteira é colocada em cada face. Ativado: a imagem é cortada em pedaços e cada face mostra o seu, pela ordem dos números.",
 	"dice.downloading": "Baixando…",
 	"dice.errorUrl": "Esse não é um link https válido.",
 	"dice.errorDownload":

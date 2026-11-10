@@ -17,6 +17,7 @@ const style = {
 	imageUrl: "https://example.com/wood.png",
 	imageUri: "file:///private/dice-1.png",
 	imageTransparency: 35,
+	imageSplit: true,
 };
 
 describe("clampTransparency / opacityOf", () => {
@@ -77,6 +78,15 @@ describe("normalizeDiceStyle", () => {
 		expect(n.numbersFollowTransparency).toBe(false);
 		expect(n.imageUrl).toBeNull();
 	});
+	it("shows the whole image on every side unless told otherwise", () => {
+		expect(DEFAULT_DICE_STYLE.imageSplit).toBe(false);
+		// Dice saved before the option existed have no value for it.
+		const { imageSplit: _gone, ...old } = style;
+		expect(normalizeDiceStyle(old).imageSplit).toBe(false);
+		expect(normalizeDiceStyle({ ...style, imageSplit: "yes" }).imageSplit).toBe(
+			false,
+		);
+	});
 });
 
 describe("exportDice", () => {
@@ -88,6 +98,7 @@ describe("exportDice", () => {
 			numbersFollowTransparency: true,
 			imageUrl: "https://example.com/wood.png",
 			imageTransparency: 35,
+			imageSplit: true,
 		});
 	});
 	it("writes auto for the automatic number color", () => {
@@ -104,6 +115,7 @@ describe("exportDice", () => {
 			numbersFollowTransparency: false,
 			imageUrl: null,
 			imageTransparency: 0,
+			imageSplit: false,
 		});
 	});
 });
@@ -125,6 +137,7 @@ describe("parseDice", () => {
 			numbersFollowTransparency: false,
 			imageUrl: null,
 			imageTransparency: 0,
+			imageSplit: false,
 		});
 	});
 	it("reads the font by id or by name, in any case", () => {
@@ -139,6 +152,11 @@ describe("parseDice", () => {
 	it("accepts colors without # and with 3 digits", () => {
 		expect(parseDice('{"numberColor":"fd6"}')?.numberColor).toBe("#FFDD66");
 		expect(parseDice('{"numberColor":"AUTO"}')?.numberColor).toBeNull();
+	});
+	it("reads the one-piece-per-side switch", () => {
+		expect(parseDice('{"imageSplit":true}')?.imageSplit).toBe(true);
+		expect(parseDice('{"imageSplit":false}')?.imageSplit).toBe(false);
+		expect(parseDice('{"transparency":10}')?.imageSplit).toBe(false);
 	});
 	it("treats an empty or null link as no image", () => {
 		expect(parseDice('{"imageUrl":""}')?.imageUrl).toBeNull();
@@ -161,6 +179,7 @@ describe("parseDice", () => {
 		expect(parseDice('{"transparency":"lots"}')).toBeNull();
 		expect(parseDice('{"numberColor":"red"}')).toBeNull();
 		expect(parseDice('{"numbersFollowTransparency":"yes"}')).toBeNull();
+		expect(parseDice('{"imageSplit":"yes"}')).toBeNull();
 		expect(parseDice('{"imageUrl":"http://a.com/x.png"}')).toBeNull();
 	});
 });

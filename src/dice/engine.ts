@@ -22,6 +22,7 @@ import {
 	buildGeometry,
 	buildLabels,
 	buildMesh,
+	faceValues,
 	hexToRgb,
 	physicalKind,
 } from "./geometry";
@@ -110,6 +111,8 @@ export class DiceEngine {
 					hexToRgb(body),
 					hexToRgb(ink),
 					this.style.numberFont,
+					// One piece of the picture per number, when the picture is cut up.
+					this.style.imageSplit ? faceValues(geometry, t.sides) : null,
 				),
 			);
 			this.meshes.set(key, gpu);

@@ -141,6 +141,9 @@ export const gl: Messages = {
 	"dice.imageUse": "Usar a imaxe",
 	"dice.imageRemove": "Quitar a imaxe",
 	"dice.imageTransparency": "Transparencia da imaxe",
+	"dice.imageSplit": "Un anaco da imaxe por cara",
+	"dice.imageSplitHint":
+		"Desactivado: a imaxe enteira colócase en cada cara. Activado: a imaxe córtase en anacos e cada cara mostra o seu, na orde dos números.",
 	"dice.downloading": "Descargando…",
 	"dice.errorUrl": "Esa non é unha ligazón https válida.",
 	"dice.errorDownload":

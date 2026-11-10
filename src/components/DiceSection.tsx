@@ -325,6 +325,20 @@ export default function DiceSection({ settings, update }: Props) {
 								setDice({ imageTransparency: step * TRANSPARENCY_STEP })
 							}
 						/>
+						<View style={[s.toggleRow, { marginTop: 16 }]}>
+							<View style={{ flex: 1, paddingRight: 12 }}>
+								<Text style={s.rowTitle}>{t("dice.imageSplit")}</Text>
+								<Text style={s.rowHint}>{t("dice.imageSplitHint")}</Text>
+							</View>
+							<Switch
+								value={dice.imageSplit}
+								onValueChange={(v) => {
+									setDice({ imageSplit: v });
+									if (v) playHaptic("buttons");
+								}}
+								trackColor={track}
+							/>
+						</View>
 					</View>
 				)}
 			</View>
@@ -393,6 +407,7 @@ const makeStyles = (t: Theme) => {
 			borderRadius: 8,
 			padding: 14,
 		},
+		toggleRow: { flexDirection: "row", alignItems: "center" },
 		rowBlock: { backgroundColor: t.card, borderRadius: 8, padding: 14 },
 		titleRow: {
 			flexDirection: "row",

@@ -8,7 +8,8 @@
  *     "numberColor": "auto",
  *     "numbersFollowTransparency": false,
  *     "imageUrl": "https://example.com/wood.png",
- *     "imageTransparency": 30
+ *     "imageTransparency": 30,
+ *     "imageSplit": false
  *   }
  *
  * The picture travels as a link, never as the picture itself: the phone that
@@ -39,6 +40,7 @@ export const DEFAULT_DICE_STYLE: DiceStyle = {
 	imageUrl: null,
 	imageUri: null,
 	imageTransparency: 0,
+	imageSplit: false,
 };
 
 /** The part of a DiceStyle that goes into an export file. */
@@ -91,6 +93,7 @@ export function normalizeDiceStyle(raw: unknown): DiceStyle {
 				? r.imageUri
 				: null,
 		imageTransparency: clampTransparency(r.imageTransparency),
+		imageSplit: r.imageSplit === true,
 	};
 }
 
@@ -102,6 +105,7 @@ export function exportDice(style: DiceStyle): string {
 		numbersFollowTransparency: style.numbersFollowTransparency,
 		imageUrl: style.imageUrl,
 		imageTransparency: style.imageTransparency,
+		imageSplit: style.imageSplit,
 	};
 	return JSON.stringify(out, null, 2);
 }
@@ -132,6 +136,7 @@ export function parseDice(text: string): DiceSettingsFile | null {
 		"numbersFollowTransparency",
 		"imageUrl",
 		"imageTransparency",
+		"imageSplit",
 	];
 	if (!known.some((k) => k in raw)) return null;
 
@@ -142,6 +147,7 @@ export function parseDice(text: string): DiceSettingsFile | null {
 		numbersFollowTransparency: DEFAULT_DICE_STYLE.numbersFollowTransparency,
 		imageUrl: DEFAULT_DICE_STYLE.imageUrl,
 		imageTransparency: DEFAULT_DICE_STYLE.imageTransparency,
+		imageSplit: DEFAULT_DICE_STYLE.imageSplit,
 	};
 
 	for (const key of ["transparency", "imageTransparency"] as const) {
@@ -180,6 +186,10 @@ export function parseDice(text: string): DiceSettingsFile | null {
 	if ("numbersFollowTransparency" in raw) {
 		if (typeof raw.numbersFollowTransparency !== "boolean") return null;
 		out.numbersFollowTransparency = raw.numbersFollowTransparency;
+	}
+	if ("imageSplit" in raw) {
+		if (typeof raw.imageSplit !== "boolean") return null;
+		out.imageSplit = raw.imageSplit;
 	}
 	if ("imageUrl" in raw) {
 		const value = raw.imageUrl;
