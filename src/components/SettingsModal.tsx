@@ -519,6 +519,15 @@ export default function SettingsModal({
 						})}
 					</Text>
 					<Text style={[s.body, { marginTop: 8 }]}>
+						{fill(t("credits.fonts"), {
+							inter: link("Inter", LINKS.inter),
+							poppins: link("Poppins", LINKS.poppins),
+							orbitron: link("Orbitron", LINKS.orbitron),
+							playfair: link("Playfair Display", LINKS.playfair),
+							license: link("SIL Open Font License 1.1", LINKS.ofl),
+						})}
+					</Text>
+					<Text style={[s.body, { marginTop: 8 }]}>
 						{fill(t("credits.madeBy"), {
 							developer: link("@knownyurimaxxer", LINKS.developer),
 						})}

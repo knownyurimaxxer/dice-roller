@@ -162,4 +162,10 @@ export const LINKS = {
 	kofi: "https://ko-fi.com/knownyurimaxxer",
 	ionicons: "https://ionic.io/ionicons",
 	ionic: "https://ionic.io/",
+	// The dice fonts (each one's project) and the license they are used under.
+	inter: "https://github.com/rsms/inter",
+	poppins: "https://github.com/itfoundry/Poppins",
+	orbitron: "https://github.com/theleagueof/orbitron",
+	playfair: "https://github.com/clauseggers/Playfair-Display",
+	ofl: "https://openfontlicense.org",
 } as const;

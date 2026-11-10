@@ -163,5 +163,7 @@ export const es: Messages = {
 	"credits.about": "Acerca de",
 	"credits.madeBy": "Hecho por {developer}.",
 	"credits.icons": "{ionicons} de {ionic}.",
+	"credits.fonts":
+		"{inter}, {poppins}, {orbitron} y {playfair}, usadas bajo la {license}.",
 	"credits.kofi": "Si algún día te apetece, ¡tengo Ko-fi!",
 };

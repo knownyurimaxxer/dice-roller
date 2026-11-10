@@ -163,5 +163,7 @@ export const eu: Messages = {
 	"credits.about": "Honi buruz",
 	"credits.madeBy": "{developer}(e)k egina.",
 	"credits.icons": "{ionicons} ({ionic}).",
+	"credits.fonts":
+		"{inter}, {poppins}, {orbitron} eta {playfair}, {license} lizentziaren pean erabiliak.",
 	"credits.kofi": "Noizbait gogoa baduzu, Ko-fi bat daukat!",
 };

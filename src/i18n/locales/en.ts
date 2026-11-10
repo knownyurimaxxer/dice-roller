@@ -166,6 +166,8 @@ export const en = {
 	"credits.about": "About",
 	"credits.madeBy": "Made by {developer}.",
 	"credits.icons": "{ionicons} by {ionic}.",
+	"credits.fonts":
+		"{inter}, {poppins}, {orbitron} and {playfair}, used under the {license}.",
 	"credits.kofi": "If you ever feel like it, I have a Ko-fi!",
 } as const;
 

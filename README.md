@@ -90,6 +90,13 @@ it, and `npm run check` to run the type check and the tests.
 
 [Ionicons](https://ionic.io/ionicons) by [@ionic](https://ionic.io/).
 
+[Inter](https://github.com/rsms/inter),
+[Poppins](https://github.com/itfoundry/Poppins),
+[Orbitron](https://github.com/theleagueof/orbitron) and
+[Playfair Display](https://github.com/clauseggers/Playfair-Display), used under
+the [SIL Open Font License 1.1](https://openfontlicense.org). Their copyright
+notices are in `assets/fonts/README.md`.
+
 Made by [@knownyurimaxxer](https://www.tumblr.com/knownyurimaxxer).
 
 If you ever feel like it, I have a [Ko-fi](https://ko-fi.com/knownyurimaxxer)!

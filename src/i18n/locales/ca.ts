@@ -163,5 +163,7 @@ export const ca: Messages = {
 	"credits.about": "Quant a",
 	"credits.madeBy": "Feta per {developer}.",
 	"credits.icons": "{ionicons} de {ionic}.",
+	"credits.fonts":
+		"{inter}, {poppins}, {orbitron} i {playfair}, usats sota la {license}.",
 	"credits.kofi": "Si algun dia et ve de gust, tinc un Ko-fi!",
 };

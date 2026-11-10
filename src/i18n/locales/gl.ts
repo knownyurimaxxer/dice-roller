@@ -163,5 +163,7 @@ export const gl: Messages = {
 	"credits.about": "Acerca de",
 	"credits.madeBy": "Feito por {developer}.",
 	"credits.icons": "{ionicons} de {ionic}.",
+	"credits.fonts":
+		"{inter}, {poppins}, {orbitron} e {playfair}, usados baixo a {license}.",
 	"credits.kofi": "Se algún día che apetece, teño un Ko-fi!",
 };
