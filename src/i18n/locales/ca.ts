@@ -125,7 +125,7 @@ export const ca: Messages = {
 	"dice.transparencyHint": "Com de transparents són els daus. 0% és opac.",
 	"dice.font": "Tipus de lletra dels números",
 	"dice.fontHint":
-		"Cada tipus de lletra s'usa en el seu pes més gruixut, perquè els números segueixin sent marcats. Playfair Display és cursiva.",
+		"Cada tipus de lletra s'usa en el seu pes més gruixut, perquè els números segueixin sent marcats.",
 	"dice.numberColor": "Color dels números",
 	"dice.numberColorHint":
 		"Auto tria blanc o negre, el que es llegeixi millor sobre els daus.",

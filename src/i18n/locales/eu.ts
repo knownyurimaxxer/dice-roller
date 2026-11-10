@@ -125,7 +125,7 @@ export const eu: Messages = {
 	"dice.transparencyHint": "Dadoak zein gardenak diren. %0 opakua da.",
 	"dice.font": "Zenbakien letra-tipoa",
 	"dice.fontHint":
-		"Letra-tipo bakoitza bere pisurik handienean erabiltzen da, zenbakiek lodiera izan dezaten. Playfair Display etzana da.",
+		"Letra-tipo bakoitza bere pisurik handienean erabiltzen da, zenbakiek lodiera izan dezaten.",
 	"dice.numberColor": "Zenbakien kolorea",
 	"dice.numberColorHint":
 		"Automatikoak zuria edo beltza aukeratzen du, dadoen gainean hobeto irakurtzen dena.",

@@ -50,6 +50,8 @@ export default function DicePreview({ style }: Props) {
 					style={[
 						s.number,
 						{
+							position: "relative",
+							top: family === DICE_FONT_FAMILIES.playfair ? -5 : 0,
 							color: ink,
 							fontFamily: family,
 							opacity: style.numbersFollowTransparency ? body : 1,

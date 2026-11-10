@@ -126,7 +126,7 @@ export const es: Messages = {
 	"dice.transparencyHint": "Lo transparentes que son los dados. 0% es opaco.",
 	"dice.font": "Fuente de los números",
 	"dice.fontHint":
-		"Cada fuente se usa en su peso más grueso, para que los números sigan siendo marcados. Playfair Display es cursiva.",
+		"Cada fuente se usa en su peso más grueso, para que los números sigan siendo marcados.",
 	"dice.numberColor": "Color de los números",
 	"dice.numberColorHint":
 		"Auto elige blanco o negro, el que mejor se lea sobre los dados.",
