@@ -1,4 +1,5 @@
 import type { HapticTrigger } from "./constants";
+import type { DiceFontId } from "./dice/fonts";
 import type { RollSpec } from "./dice/roll";
 import type { Layout } from "./utils/orientation";
 
@@ -15,6 +16,8 @@ export type Theme = {
 export type DiceStyle = {
 	/** How see-through the dice are, in percent: 0 (solid) to 90. */
 	transparency: number;
+	/** The font of the numbers on the dice (see DICE_FONTS). */
+	numberFont: DiceFontId;
 	/** Color of the numbers as #RRGGBB, or null to pick whichever reads best. */
 	numberColor: string | null;
 	/** Whether the numbers become see-through along with the dice. */

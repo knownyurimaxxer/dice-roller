@@ -47,7 +47,9 @@ If you have an issue, just open an [Issue](../../issues)!
 - **Make it yours.** Pick a theme. There are a few ready-made ones, or you can
   choose each color yourself. The dice use the accent color.
 - **Style the dice.** Settings > Dice: make the dice more or less transparent,
-  pick the color of the numbers (and whether they turn transparent too), and lay
+  pick the font of the numbers (Inter, Poppins, Orbitron or Playfair Display
+  Italic, all in their heaviest weight), the color of the numbers (and whether
+  they turn transparent too), and lay
   a picture over the dice color from an https link. The app downloads its own
   copy and deletes the previous one when you use a new picture. The dice
   settings have their own export / import, separate from the theme's (the

@@ -4,6 +4,7 @@
  *
  *   {
  *     "transparency": 20,
+ *     "numberFont": "inter",
  *     "numberColor": "auto",
  *     "numbersFollowTransparency": false,
  *     "imageUrl": "https://example.com/wood.png",
@@ -14,6 +15,12 @@
  * imports it downloads its own copy. Where that copy is stored (`imageUri`)
  * is private to each phone and is never written to the file.
  */
+import {
+	DEFAULT_DICE_FONT,
+	DICE_FONT_NAMES,
+	DICE_FONTS,
+	isDiceFont,
+} from "../dice/fonts";
 import type { DiceStyle } from "../types";
 import { normalizeHex } from "./color";
 
@@ -26,6 +33,7 @@ export const IMAGE_URL_MAX = 2048;
 
 export const DEFAULT_DICE_STYLE: DiceStyle = {
 	transparency: 0,
+	numberFont: DEFAULT_DICE_FONT,
 	numberColor: null,
 	numbersFollowTransparency: false,
 	imageUrl: null,
@@ -71,6 +79,8 @@ export function normalizeDiceStyle(raw: unknown): DiceStyle {
 	const imageUrl = normalizeImageUrl(r.imageUrl);
 	return {
 		transparency: clampTransparency(r.transparency),
+		// A font that no longer exists (or never did) becomes the default.
+		numberFont: isDiceFont(r.numberFont) ? r.numberFont : DEFAULT_DICE_FONT,
 		numberColor:
 			typeof r.numberColor === "string" ? normalizeHex(r.numberColor) : null,
 		numbersFollowTransparency: r.numbersFollowTransparency === true,
@@ -87,6 +97,7 @@ export function normalizeDiceStyle(raw: unknown): DiceStyle {
 export function exportDice(style: DiceStyle): string {
 	const out: Record<string, unknown> = {
 		transparency: style.transparency,
+		numberFont: style.numberFont,
 		numberColor: style.numberColor ?? "auto",
 		numbersFollowTransparency: style.numbersFollowTransparency,
 		imageUrl: style.imageUrl,
@@ -116,6 +127,7 @@ export function parseDice(text: string): DiceSettingsFile | null {
 	const raw = data as Record<string, unknown>;
 	const known = [
 		"transparency",
+		"numberFont",
 		"numberColor",
 		"numbersFollowTransparency",
 		"imageUrl",
@@ -125,6 +137,7 @@ export function parseDice(text: string): DiceSettingsFile | null {
 
 	const out: DiceSettingsFile = {
 		transparency: DEFAULT_DICE_STYLE.transparency,
+		numberFont: DEFAULT_DICE_STYLE.numberFont,
 		numberColor: DEFAULT_DICE_STYLE.numberColor,
 		numbersFollowTransparency: DEFAULT_DICE_STYLE.numbersFollowTransparency,
 		imageUrl: DEFAULT_DICE_STYLE.imageUrl,
@@ -136,6 +149,20 @@ export function parseDice(text: string): DiceSettingsFile | null {
 		const value = raw[key];
 		if (typeof value !== "number" || !Number.isFinite(value)) return null;
 		out[key] = clampTransparency(value);
+	}
+	if ("numberFont" in raw) {
+		// Names are matched without caring about case or spaces ("Playfair Display").
+		const wanted =
+			typeof raw.numberFont === "string"
+				? raw.numberFont.toLowerCase().replace(/[^a-z]/g, "")
+				: "";
+		const found = DICE_FONTS.find(
+			(id) =>
+				wanted === id ||
+				wanted === DICE_FONT_NAMES[id].toLowerCase().replace(/[^a-z]/g, ""),
+		);
+		if (!found) return null;
+		out.numberFont = found;
 	}
 	if ("numberColor" in raw) {
 		const value = raw.numberColor;

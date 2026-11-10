@@ -124,6 +124,9 @@ export const gl: Messages = {
 	"settings.dice": "Dados",
 	"dice.transparency": "Transparencia",
 	"dice.transparencyHint": "Canto de transparentes son os dados. 0% é opaco.",
+	"dice.font": "Tipo de letra dos números",
+	"dice.fontHint":
+		"Cada tipo de letra úsase no seu peso máis groso, para que os números sigan sendo marcados. Playfair Display é cursiva.",
 	"dice.numberColor": "Cor dos números",
 	"dice.numberColorHint":
 		"Auto escolle branco ou negro, o que mellor se lea sobre os dados.",

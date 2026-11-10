@@ -11,6 +11,7 @@ import {
 
 const style = {
 	transparency: 20,
+	numberFont: "playfair" as const,
 	numberColor: "#FFD166",
 	numbersFollowTransparency: true,
 	imageUrl: "https://example.com/wood.png",
@@ -67,9 +68,11 @@ describe("normalizeDiceStyle", () => {
 			transparency: 999,
 			numberColor: "zzz",
 			numbersFollowTransparency: "yes",
+			numberFont: "Comic Sans",
 			imageUrl: "ftp://x",
 		});
 		expect(n.transparency).toBe(90);
+		expect(n.numberFont).toBe("inter");
 		expect(n.numberColor).toBeNull();
 		expect(n.numbersFollowTransparency).toBe(false);
 		expect(n.imageUrl).toBeNull();
@@ -80,6 +83,7 @@ describe("exportDice", () => {
 	it("writes the five names, and never the local copy", () => {
 		expect(JSON.parse(exportDice(style))).toEqual({
 			transparency: 20,
+			numberFont: "playfair",
 			numberColor: "#FFD166",
 			numbersFollowTransparency: true,
 			imageUrl: "https://example.com/wood.png",
@@ -95,6 +99,7 @@ describe("exportDice", () => {
 		expect(parseDice(exportDice(style))).toEqual(file);
 		expect(parseDice(exportDice(DEFAULT_DICE_STYLE))).toEqual({
 			transparency: 0,
+			numberFont: "inter",
 			numberColor: null,
 			numbersFollowTransparency: false,
 			imageUrl: null,
@@ -115,11 +120,21 @@ describe("parseDice", () => {
 	it("fills in missing names with the defaults", () => {
 		expect(parseDice('{"transparency": 40}')).toEqual({
 			transparency: 40,
+			numberFont: "inter",
 			numberColor: null,
 			numbersFollowTransparency: false,
 			imageUrl: null,
 			imageTransparency: 0,
 		});
+	});
+	it("reads the font by id or by name, in any case", () => {
+		expect(parseDice('{"numberFont":"orbitron"}')?.numberFont).toBe("orbitron");
+		expect(parseDice('{"numberFont":"Playfair Display"}')?.numberFont).toBe(
+			"playfair",
+		);
+		expect(parseDice('{"numberFont":"POPPINS"}')?.numberFont).toBe("poppins");
+		expect(parseDice('{"numberFont":"Comic Sans"}')).toBeNull();
+		expect(parseDice('{"numberFont":3}')).toBeNull();
 	});
 	it("accepts colors without # and with 3 digits", () => {
 		expect(parseDice('{"numberColor":"fd6"}')?.numberColor).toBe("#FFDD66");

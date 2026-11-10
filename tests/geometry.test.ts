@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { DICE_FONTS } from "../src/dice/fonts";
 import {
 	buildGeometry,
 	buildLabels,
@@ -14,6 +15,7 @@ import {
 	rotate,
 	sub,
 	valueText,
+	type LabelRole,
 	type PhysicalKind,
 } from "../src/dice/geometry";
 
@@ -269,6 +271,31 @@ describe("buildMesh", () => {
 			expect(m.bodyIndexCount).toBeLessThanOrEqual(m.indices.length);
 			expect(Math.max(...m.indices)).toBeLessThan(vertices);
 		}
+	});
+
+	it("fits in 16-bit indices in every number font, for every kind of label", () => {
+		for (const font of DICE_FONTS)
+			for (const kind of KINDS) {
+				const g = buildGeometry(kind);
+				const roles: [number, LabelRole][] =
+					kind === "d10"
+						? [
+								[10, "plain"],
+								[100, "tens"],
+								[100, "units"],
+							]
+						: [[SIDES[kind], "plain"]];
+				for (const [sides, role] of roles) {
+					const m = buildMesh(
+						g,
+						buildLabels(g, sides, role, font),
+						[1, 0, 0],
+						[0, 0, 1],
+						font,
+					);
+					expect(m.positions.length / 3).toBeLessThan(65536);
+				}
+			}
 	});
 
 	it("lays a picture on every face, inside the picture's square", () => {

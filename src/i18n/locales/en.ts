@@ -127,6 +127,9 @@ export const en = {
 	"settings.dice": "Dice",
 	"dice.transparency": "Transparency",
 	"dice.transparencyHint": "How see-through the dice are. 0% is solid.",
+	"dice.font": "Number font",
+	"dice.fontHint":
+		"Every font is used in its heaviest weight, so the numbers stay bold. Playfair Display is italic.",
 	"dice.numberColor": "Number color",
 	"dice.numberColorHint":
 		"Auto picks black or white, whichever reads best on the dice.",

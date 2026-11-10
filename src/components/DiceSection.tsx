@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { NUMBER_SWATCHES } from "../constants";
+import { DICE_FONT_FAMILIES, DICE_FONT_NAMES, DICE_FONTS } from "../dice/fonts";
 import { useI18n } from "../i18n/I18nContext";
 import {
 	DiceImageError,
@@ -150,7 +151,37 @@ export default function DiceSection({ settings, update }: Props) {
 				/>
 			</View>
 
-			{/* the numbers */}
+			{/* the numbers: font, then color */}
+			<View style={[s.rowBlock, { marginTop: 12, paddingBottom: 6 }]}>
+				<Text style={s.rowTitle}>{t("dice.font")}</Text>
+				<Text style={[s.rowHint, { marginBottom: 6 }]}>
+					{t("dice.fontHint")}
+				</Text>
+				{DICE_FONTS.map((id) => {
+					const selected = dice.numberFont === id;
+					return (
+						<Pressable
+							key={id}
+							accessibilityRole="radio"
+							accessibilityState={{ selected }}
+							onPress={() => {
+								haptic("buttons");
+								setDice({ numberFont: id });
+							}}
+							style={({ pressed }) => [s.fontRow, pressed && s.pressed]}
+						>
+							<Text
+								style={[s.fontName, { fontFamily: DICE_FONT_FAMILIES[id] }]}
+							>
+								{DICE_FONT_NAMES[id]} 0123
+							</Text>
+							{selected && (
+								<Ionicons name="checkmark" size={22} color={theme.accent} />
+							)}
+						</Pressable>
+					);
+				})}
+			</View>
 			<View style={[s.rowBlock, { marginTop: 12 }]}>
 				<Text style={s.rowTitle}>{t("dice.numberColor")}</Text>
 				<Text style={[s.rowHint, { marginBottom: 10 }]}>
@@ -397,6 +428,15 @@ const makeStyles = (t: Theme) => {
 			justifyContent: "center",
 			backgroundColor: t.card,
 		},
+		fontRow: {
+			flexDirection: "row",
+			alignItems: "center",
+			justifyContent: "space-between",
+			paddingVertical: 10,
+			borderTopWidth: StyleSheet.hairlineWidth,
+			borderTopColor: t.text + "33",
+		},
+		fontName: { color: t.text, fontSize: 20 },
 		autoText: { color: t.text, fontWeight: "700", fontSize: 14 },
 		ringActive: { borderColor: t.accent },
 		swatch: {

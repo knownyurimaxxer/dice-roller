@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { NUMBER_FONT } from "../constants";
+import { DICE_FONT_FAMILIES } from "../dice/fonts";
 import { useTheme } from "../theme/ThemeContext";
 import { DiceStyle, Theme } from "../types";
 import { opacityOf } from "../utils/diceStyle";
@@ -10,6 +10,7 @@ type Props = {
 	style: Pick<
 		DiceStyle,
 		| "transparency"
+		| "numberFont"
 		| "numberColor"
 		| "numbersFollowTransparency"
 		| "imageTransparency"
@@ -26,6 +27,7 @@ export default function DicePreview({ style }: Props) {
 	const s = useMemo(() => makeStyles(theme), [theme]);
 	const body = opacityOf(style.transparency);
 	const ink = style.numberColor ?? readableOn(theme.accent);
+	const family = DICE_FONT_FAMILIES[style.numberFont];
 	return (
 		<View style={s.board} accessibilityElementsHidden>
 			<View style={s.die}>
@@ -49,6 +51,7 @@ export default function DicePreview({ style }: Props) {
 						s.number,
 						{
 							color: ink,
+							fontFamily: family,
 							opacity: style.numbersFollowTransparency ? body : 1,
 						},
 					]}
@@ -80,5 +83,5 @@ const makeStyles = (t: Theme) =>
 			alignItems: "center",
 			justifyContent: "center",
 		},
-		number: { fontFamily: NUMBER_FONT, fontSize: 32 },
+		number: { fontSize: 32 },
 	});

@@ -12,6 +12,7 @@
  * point away from the die.
  */
 import { textTriangles, textWidth } from "./digits";
+import { DEFAULT_DICE_FONT, type DiceFontId } from "./fonts";
 
 export type V3 = [number, number, number];
 
@@ -467,6 +468,7 @@ export function buildLabels(
 	g: Geometry,
 	sides: number,
 	role: LabelRole,
+	font: DiceFontId = DEFAULT_DICE_FONT,
 ): Label[][] {
 	const values = faceValues(g, sides);
 	return g.faces.map((f, i) => {
@@ -490,7 +492,7 @@ export function buildLabels(
 		}
 		const text = valueText(sides, role, value);
 		const room = f.inradius * (g.kind === "coin" ? 0.8 : 0.95);
-		const fit = (1.5 * f.inradius) / (textWidth(text, 1) || 1); // keep wide numbers on the face
+		const fit = (1.5 * f.inradius) / (textWidth(text, 1, font) || 1); // keep wide numbers on the face
 		return [{ text, x: 0, y: 0, angle: 0, height: Math.min(room, fit) }];
 	});
 }
@@ -515,6 +517,7 @@ export function buildMesh(
 	labels: Label[][],
 	body: RGB,
 	ink: RGB,
+	font: DiceFontId = DEFAULT_DICE_FONT,
 ): Mesh {
 	const m: Mesh = {
 		positions: [],
@@ -578,7 +581,7 @@ export function buildMesh(
 				const ly = label.y + x * sin + y * cos;
 				return add(base, add(mul(ex, lx), mul(ey, ly)));
 			};
-			for (const tri of textTriangles(label.text, label.height)) {
+			for (const tri of textTriangles(label.text, label.height, font)) {
 				const ids = tri.map(([x, y]) => vertex(place(x, y), f.normal, ink));
 				m.indices.push(ids[0], ids[1], ids[2]);
 			}

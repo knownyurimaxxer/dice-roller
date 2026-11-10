@@ -106,9 +106,10 @@ export class DiceEngine {
 			gpu = this.renderer.upload(
 				buildMesh(
 					geometry,
-					buildLabels(geometry, t.sides, t.role),
+					buildLabels(geometry, t.sides, t.role, this.style.numberFont),
 					hexToRgb(body),
 					hexToRgb(ink),
+					this.style.numberFont,
 				),
 			);
 			this.meshes.set(key, gpu);

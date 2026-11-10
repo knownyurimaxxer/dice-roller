@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { textTriangles, textWidth } from "../src/dice/digits";
-import { GLYPHS } from "../src/dice/glyphs";
+import { DICE_FONTS } from "../src/dice/fonts";
+import { GLYPH_SETS } from "../src/dice/glyphs";
 
 const signedArea = (a: number[], b: number[], c: number[]) =>
 	((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])) / 2;
 
-describe("number font glyphs", () => {
+describe.each([...DICE_FONTS])("%s number font glyphs", (font) => {
+	const GLYPHS = GLYPH_SETS[font];
+
 	it("has every digit", () => {
 		for (const d of "0123456789") {
 			expect(GLYPHS[d].indices.length).toBeGreaterThan(0);
@@ -46,6 +49,32 @@ describe("number font glyphs", () => {
 				ink += signedArea(p[0], p[1], p[2]);
 			}
 			expect(ink).toBeLessThan((g.xMax - g.xMin) * 0.85);
+		}
+	});
+});
+
+describe("every font", () => {
+	it("has glyphs for every font in the list, and only those", () => {
+		expect(Object.keys(GLYPH_SETS).sort()).toEqual([...DICE_FONTS].sort());
+	});
+
+	it("draws different shapes for different fonts", () => {
+		const shape = (font: (typeof DICE_FONTS)[number]) =>
+			JSON.stringify(textTriangles("8", 1, font));
+		for (const a of DICE_FONTS)
+			for (const b of DICE_FONTS)
+				if (a !== b) expect(shape(a)).not.toBe(shape(b));
+	});
+
+	it("keeps text centered and counter-clockwise in each font", () => {
+		for (const font of DICE_FONTS) {
+			const tris = textTriangles("20", 1, font);
+			for (const [a, b, c] of tris)
+				expect(signedArea(a, b, c)).toBeGreaterThanOrEqual(0);
+			const xs = tris.flat().map((p) => p[0]);
+			const half = textWidth("20", 1, font) / 2;
+			expect(Math.min(...xs)).toBeCloseTo(-half, 2);
+			expect(Math.max(...xs)).toBeCloseTo(half, 2);
 		}
 	});
 });
