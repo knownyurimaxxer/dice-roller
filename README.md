@@ -35,18 +35,18 @@ If you have an issue, just open an [Issue](../../issues)!
   separately switchable in Settings.
 - **Haptics.** Off by default. Turn them on in Settings, then choose which
   moments vibrate: throwing, clashing, the result and button taps.
-- **Gestures.** Both are off by default (Settings > Gestures). Swipe up
+- **Gestures.** Off by default. Swipe up
   anywhere on the screen to roll the dice you picked, or throw the phone
   (you choose how gentle the throw can be).
-- **It never rotates by itself.** Settings > Orientation keeps the screen
+- **It never rotates by itself.** Keeps the screen
   vertical or horizontal, so moving the phone to roll can't turn the screen.
   Vertical is the default.
-- **Languages.** Settings > Language: "System default" follows the phone (and
+- **Languages.** "System default" follows the phone (and
   uses English when the phone's language isn't available), or pick one.
   English, Spanish, Catalan, Galician, Basque and Portuguese.
 - **Make it yours.** Pick a theme. There are a few ready-made ones, or you can
-  choose each color yourself. The dice use the accent color.
-- **Style the dice.** Settings > Dice: make the dice more or less transparent,
+  choose each color yourself. The dice use the accent color. Theme import and export included!
+- **Style the dice.** Make the dice more or less transparent,
   pick the font of the numbers (Inter, Poppins, Orbitron or Playfair Display
   Italic, all in their heaviest weight), the color of the numbers (and whether
   they turn transparent too), and lay
