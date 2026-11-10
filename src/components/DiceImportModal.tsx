@@ -109,7 +109,8 @@ export default function DiceImportModal({ visible, onApply, onClose }: Props) {
 
 					{parsed && (
 						<View style={{ marginTop: 12 }}>
-							<DicePreview style={parsed} />
+							{/* Nothing is downloaded until Apply, so the preview loads the picture straight from its link. */}
+							<DicePreview style={{ ...parsed, imageUri: parsed.imageUrl }} />
 							{parsed.imageUrl && (
 								<Text style={s.url} numberOfLines={2}>
 									{parsed.imageUrl}
