@@ -155,7 +155,7 @@ def main():
     mark = render_mark(500, 1.45)
     fg.alpha_composite(mark, (560, 0))
     d = ImageDraw.Draw(fg)
-    d.text((70, 160), "Dice Roller", font=font(84), fill=WHITE)
+    d.text((70, 160), "Dice Roller", font=font(74), fill=WHITE)
     d.text((74, 275), "Throw 3D dice on a tray.", font=font(34), fill=ACCENT)
     save(fg, "store/feature-graphic-1024x500.png", "RGB")
 
