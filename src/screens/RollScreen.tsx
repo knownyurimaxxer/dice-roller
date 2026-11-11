@@ -332,7 +332,7 @@ export default function RollScreen({
 							hitSlop={10}
 							onPress={() => open("history")}
 						>
-							<Ionicons name="time-outline" size={26} color={iconColor} />
+							<Ionicons name="time-outline" size={24} color={iconColor} />
 						</Pressable>
 						<Pressable
 							accessibilityRole="button"
@@ -341,7 +341,7 @@ export default function RollScreen({
 							onPress={() => open("favorites")}
 							style={{ marginLeft: 20 }}
 						>
-							<Ionicons name="star-outline" size={26} color={iconColor} />
+							<Ionicons name="star-outline" size={24} color={iconColor} />
 						</Pressable>
 						<Pressable
 							accessibilityRole="button"
@@ -350,7 +350,7 @@ export default function RollScreen({
 							onPress={() => open("settings")}
 							style={{ marginLeft: "auto" }}
 						>
-							<Ionicons name="settings-outline" size={26} color={iconColor} />
+							<Ionicons name="settings-outline" size={24} color={iconColor} />
 						</Pressable>
 					</View>
 				</View>
