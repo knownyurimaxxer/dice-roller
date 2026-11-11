@@ -17,7 +17,7 @@
 				"monochromeImage": "./assets/android-icon-monochrome.png"
 			},
 			"predictiveBackGestureEnabled": false,
-			"package": "com.knownyurimaxxer.dicetray"
+			"package": "com.knownyurimaxxer.diceroller"
 		},
 		"web": {
 			"favicon": "./assets/favicon.png"
