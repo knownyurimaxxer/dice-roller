@@ -48,7 +48,7 @@ export const gl: Messages = {
 	// history
 	"history.title": "Historial",
 	"history.empty": "Aínda non hai tiradas.\nVai lanzar uns dados.",
-	"history.clear": "Borrar historial",
+	"history.clear": "Baleirar",
 	"history.clearTitle": "Queres borrar o historial?",
 	"history.clearBody": "Eliminaranse todas as tiradas anteriores.",
 	"time.now": "agora mesmo",

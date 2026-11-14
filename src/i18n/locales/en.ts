@@ -53,7 +53,7 @@ export const en = {
 	// history
 	"history.title": "History",
 	"history.empty": "No rolls yet.\nGo roll some dice.",
-	"history.clear": "Clear history",
+	"history.clear": "Clear",
 	"history.clearTitle": "Clear the history?",
 	"history.clearBody": "All previous rolls will be deleted.",
 	"time.now": "just now",

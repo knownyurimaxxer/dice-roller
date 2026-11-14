@@ -12,10 +12,17 @@ type Props = {
 	title: string;
 	onClose: () => void;
 	children: ReactNode;
+	extra?: () => ReactNode;
 };
 
 /** A full-screen page that slides up, with a title and a Done button. */
-export default function Sheet({ visible, title, onClose, children }: Props) {
+export default function Sheet({
+	visible,
+	title,
+	onClose,
+	extra,
+	children,
+}: Props) {
 	const theme = useTheme();
 	const t = useT();
 	const insets = useSafeAreaInsets(); // known from the first frame (see App)
@@ -43,15 +50,18 @@ export default function Sheet({ visible, title, onClose, children }: Props) {
 			>
 				<View style={s.header}>
 					<Text style={s.title}>{title}</Text>
-					<Pressable
-						onPress={() => {
-							haptic("buttons");
-							onClose();
-						}}
-						style={s.doneBtn}
-					>
-						<Text style={s.doneText}>{t("common.done")}</Text>
-					</Pressable>
+					<View style={s.headerButtons}>
+						{extra?.()}
+						<Pressable
+							onPress={() => {
+								haptic("buttons");
+								onClose();
+							}}
+							style={s.doneBtn}
+						>
+							<Text style={s.doneText}>{t("common.done")}</Text>
+						</Pressable>
+					</View>
 				</View>
 				{children}
 			</View>
@@ -68,6 +78,7 @@ const makeStyles = (t: Theme) =>
 			justifyContent: "space-between",
 			padding: 14,
 		},
+		headerButtons: { flexDirection: "row", alignItems: "center", gap: 10 },
 		title: { color: readableOn(t.background), fontSize: 20, fontWeight: "800" },
 		doneBtn: {
 			backgroundColor: t.accent,

@@ -48,7 +48,7 @@ export const eu: Messages = {
 	// history
 	"history.title": "Historia",
 	"history.empty": "Oraindik ez dago botarik.\nBota itzazu dadoak.",
-	"history.clear": "Garbitu historia",
+	"history.clear": "Hustu",
 	"history.clearTitle": "Historia garbitu nahi duzu?",
 	"history.clearBody": "Aurreko bota guztiak ezabatuko dira.",
 	"time.now": "oraintxe bertan",

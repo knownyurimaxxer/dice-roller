@@ -48,7 +48,7 @@ export const pt: Messages = {
 	// history
 	"history.title": "Histórico",
 	"history.empty": "Ainda não há lançamentos.\nVai lançar uns dados.",
-	"history.clear": "Limpar histórico",
+	"history.clear": "Limpar",
 	"history.clearTitle": "Limpar o histórico?",
 	"history.clearBody": "Todos os lançamentos anteriores serão eliminados.",
 	"time.now": "agora mesmo",

@@ -48,7 +48,7 @@ export const ca: Messages = {
 	// history
 	"history.title": "Historial",
 	"history.empty": "Encara no hi ha tirades.\nVés a llançar uns daus.",
-	"history.clear": "Esborra l'historial",
+	"history.clear": "Buida",
 	"history.clearTitle": "Vols esborrar l'historial?",
 	"history.clearBody": "S'eliminaran totes les tirades anteriors.",
 	"time.now": "ara mateix",

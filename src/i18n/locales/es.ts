@@ -48,7 +48,7 @@ export const es: Messages = {
 	// history
 	"history.title": "Historial",
 	"history.empty": "Aún no hay tiradas.\nVe a lanzar unos dados.",
-	"history.clear": "Borrar historial",
+	"history.clear": "Vaciar",
 	"history.clearTitle": "¿Borrar el historial?",
 	"history.clearBody": "Se eliminarán todas las tiradas anteriores.",
 	"time.now": "ahora mismo",

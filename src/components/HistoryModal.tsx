@@ -47,7 +47,22 @@ export default function HistoryModal({
 	};
 
 	return (
-		<Sheet visible={visible} title={t("history.title")} onClose={onClose}>
+		<Sheet
+			visible={visible}
+			title={t("history.title")}
+			onClose={onClose}
+			extra={() =>
+				history.length > 0 ? (
+					<Pressable
+						accessibilityRole="button"
+						onPress={confirmClear}
+						style={({ pressed }) => [s.clearBtn, pressed && s.pressed]}
+					>
+						<Text style={s.clearText}>{t("history.clear")}</Text>
+					</Pressable>
+				) : null
+			}
+		>
 			<FlatList
 				data={history}
 				keyExtractor={(e) => String(e.id)}
@@ -76,17 +91,6 @@ export default function HistoryModal({
 						</View>
 					);
 				}}
-				ListFooterComponent={
-					history.length > 0 ? (
-						<Pressable
-							accessibilityRole="button"
-							onPress={confirmClear}
-							style={({ pressed }) => [s.clearBtn, pressed && s.pressed]}
-						>
-							<Text style={s.clearText}>{t("history.clear")}</Text>
-						</Pressable>
-					) : undefined
-				}
 			/>
 		</Sheet>
 	);
@@ -126,11 +130,9 @@ const makeStyles = (t: Theme) => {
 			textAlign: "right",
 		},
 		clearBtn: {
-			alignSelf: "stretch",
-			alignItems: "center",
-			marginTop: 14,
-			paddingVertical: 12,
-			borderRadius: 10,
+			paddingHorizontal: 16,
+			paddingVertical: 7,
+			borderRadius: 18,
 			borderWidth: 1,
 			borderColor: DANGER,
 		},
