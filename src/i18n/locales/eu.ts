@@ -51,10 +51,6 @@ export const eu: Messages = {
 	"history.clear": "Hustu",
 	"history.clearTitle": "Historia garbitu nahi duzu?",
 	"history.clearBody": "Aurreko bota guztiak ezabatuko dira.",
-	"time.now": "oraintxe bertan",
-	"time.minutes": "{n} min",
-	"time.hours": "{n} h",
-	"time.days": "{n} egun",
 
 	// settings
 	"settings.title": "Ezarpenak",

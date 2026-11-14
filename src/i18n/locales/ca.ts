@@ -51,10 +51,6 @@ export const ca: Messages = {
 	"history.clear": "Buida",
 	"history.clearTitle": "Vols esborrar l'historial?",
 	"history.clearBody": "S'eliminaran totes les tirades anteriors.",
-	"time.now": "ara mateix",
-	"time.minutes": "{n} min",
-	"time.hours": "{n} h",
-	"time.days": "{n} d",
 
 	// settings
 	"settings.title": "Ajustos",

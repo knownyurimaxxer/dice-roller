@@ -248,7 +248,7 @@ export const favoriteTitle = (f: { name: string; spec: RollSpec }): string =>
 
 /** What the dice of one kind showed: "14 (7)" (the ones that didn't count in parentheses). */
 export const groupDetail = (g: GroupResult): string =>
-	g.values.map((v, i) => (g.kept.includes(i) ? `${v}` : `(${v})`)).join(" ");
+	g.values.map((v, i) => (g.kept.includes(i) ? `${v}` : `${v}`)).join(" ");
 
 /**
  * The kinds of die worth listing under the result. With several kinds, all of

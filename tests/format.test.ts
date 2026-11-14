@@ -5,7 +5,6 @@ import {
 	mixColors,
 	readableOn,
 	shade,
-	timeAgo,
 } from "../src/utils/format";
 
 describe("readableOn", () => {
@@ -44,28 +43,5 @@ describe("contrast", () => {
 		// cyan on the dark navy background: fine; cyan on a white card: too faint
 		expect(legibleAccent("#00B8FF", "#001935", "#222222")).toBe("#00B8FF");
 		expect(legibleAccent("#00B8FF", "#FFFFFF", "#222222")).toBe("#222222");
-	});
-});
-
-describe("timeAgo", () => {
-	const now = 1_700_000_000_000;
-	it("goes from just now to days", () => {
-		expect(timeAgo(now - 5_000, undefined, undefined, now)).toBe("just now");
-		expect(timeAgo(now - (5 * 60_000 + 500), undefined, undefined, now)).toBe(
-			"5m",
-		);
-		expect(
-			timeAgo(now - (3 * 3_600_000 + 500), undefined, undefined, now),
-		).toBe("3h");
-		expect(
-			timeAgo(now - (2 * 86_400_000 + 500), undefined, undefined, now),
-		).toBe("2d");
-	});
-
-	it("shows the date for old rolls, in the locale", () => {
-		const old = now - 30 * 86_400_000;
-		expect(timeAgo(old, undefined, "es", now)).toBe(
-			new Date(old).toLocaleDateString("es"),
-		);
 	});
 });

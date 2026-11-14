@@ -51,10 +51,6 @@ export const gl: Messages = {
 	"history.clear": "Baleirar",
 	"history.clearTitle": "Queres borrar o historial?",
 	"history.clearBody": "Eliminaranse todas as tiradas anteriores.",
-	"time.now": "agora mesmo",
-	"time.minutes": "{n} min",
-	"time.hours": "{n} h",
-	"time.days": "{n} d",
 
 	// settings
 	"settings.title": "Axustes",

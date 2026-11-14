@@ -51,10 +51,6 @@ export const es: Messages = {
 	"history.clear": "Vaciar",
 	"history.clearTitle": "¿Borrar el historial?",
 	"history.clearBody": "Se eliminarán todas las tiradas anteriores.",
-	"time.now": "ahora mismo",
-	"time.minutes": "{n} min",
-	"time.hours": "{n} h",
-	"time.days": "{n} d",
 
 	// settings
 	"settings.title": "Ajustes",

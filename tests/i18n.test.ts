@@ -10,7 +10,6 @@ import {
 	SYSTEM_LANGUAGE,
 } from "../src/i18n";
 import { en } from "../src/i18n/locales/en";
-import { timeAgo } from "../src/utils/format";
 
 const placeholders = (text: string) =>
 	(text.match(/\{\w+\}/g) ?? []).sort().join(",");
@@ -71,13 +70,7 @@ describe("makeTranslator", () => {
 	it("looks texts up and fills in placeholders", () => {
 		const t = makeTranslator(en);
 		expect(t("common.cancel")).toBe("Cancel");
-		expect(t("time.minutes", { n: 5 })).toBe("5m");
 		expect(t("roll.addDie", { die: "d20" })).toBe("Add a d20");
-	});
-
-	it("leaves a placeholder alone when it isn't given", () => {
-		expect(makeTranslator(en)("time.minutes")).toBe("{n}m");
-		expect(makeTranslator(en)("time.minutes", { x: 1 })).toBe("{n}m");
 	});
 
 	it("shows English for a text the language doesn't have yet", () => {
@@ -146,23 +139,6 @@ describe("labels in constants", () => {
 		for (const name of Object.keys(PRESETS))
 			expect(PRESET_LABELS[name] in en).toBe(true);
 		for (const key of Object.values(ROLE_LABELS)) expect(key in en).toBe(true);
-	});
-});
-
-describe("timeAgo in another language", () => {
-	const es = buildI18n("es", []);
-
-	it("use the translator they are given", () => {
-		expect(timeAgo(Date.now() - 5_000, es.t)).toBe("ahora mismo");
-		expect(timeAgo(Date.now() - (5 * 60_000 + 500), es.t)).toBe("5 min");
-		expect(timeAgo(Date.now() - (3 * 3_600_000 + 500), es.t)).toBe("3 h");
-	});
-
-	it("format the old-roll date for the locale", () => {
-		const old = Date.now() - 30 * 86_400_000;
-		expect(timeAgo(old, es.t, "es")).toBe(
-			new Date(old).toLocaleDateString("es"),
-		);
 	});
 });
 

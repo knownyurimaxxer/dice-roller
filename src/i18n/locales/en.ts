@@ -56,10 +56,6 @@ export const en = {
 	"history.clear": "Clear",
 	"history.clearTitle": "Clear the history?",
 	"history.clearBody": "All previous rolls will be deleted.",
-	"time.now": "just now",
-	"time.minutes": "{n}m",
-	"time.hours": "{n}h",
-	"time.days": "{n}d",
 
 	// settings
 	"settings.title": "Settings",

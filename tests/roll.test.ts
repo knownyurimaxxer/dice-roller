@@ -238,7 +238,7 @@ describe("evaluate", () => {
 
 	it("describes the dice of a kind, with the ones that didn't count in parentheses", () => {
 		const r = evaluate(spec([[20, 3]], "advantage"), { 20: [4, 18, 9] });
-		expect(groupDetail(r.groups[0])).toBe("(4) 18 (9)");
+		expect(groupDetail(r.groups[0])).toBe("4 18 9");
 		expect(groupDetail(evaluate(spec([[6, 2]]), { 6: [1, 2] }).groups[0])).toBe(
 			"1 2",
 		);

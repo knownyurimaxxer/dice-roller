@@ -51,10 +51,6 @@ export const pt: Messages = {
 	"history.clear": "Limpar",
 	"history.clearTitle": "Limpar o histórico?",
 	"history.clearBody": "Todos os lançamentos anteriores serão eliminados.",
-	"time.now": "agora mesmo",
-	"time.minutes": "{n} min",
-	"time.hours": "{n} h",
-	"time.days": "{n} d",
 
 	// settings
 	"settings.title": "Definições",

@@ -17,7 +17,7 @@ import {
 import { useI18n } from "../i18n/I18nContext";
 import { useTheme } from "../theme/ThemeContext";
 import { Theme } from "../types";
-import { legibleAccent, readableOn, timeAgo } from "../utils/format";
+import { readableOn } from "../utils/format";
 import { haptic } from "../utils/haptics";
 import Sheet from "./Sheet";
 
@@ -35,7 +35,7 @@ export default function HistoryModal({
 	onClear,
 }: Props) {
 	const theme = useTheme();
-	const { t, locale } = useI18n();
+	const { t } = useI18n();
 	const s = useMemo(() => makeStyles(theme), [theme]);
 
 	const confirmClear = () => {
@@ -83,7 +83,6 @@ export default function HistoryModal({
 										{detail}
 									</Text>
 								)}
-								<Text style={s.time}>{timeAgo(item.createdAt, t, locale)}</Text>
 							</View>
 							<Text style={s.result} numberOfLines={1} adjustsFontSizeToFit>
 								{resultSummary(item.spec, item.result)}
@@ -101,7 +100,7 @@ const DANGER = "#FF4D4D";
 const makeStyles = (t: Theme) => {
 	const onBg = readableOn(t.background);
 	return StyleSheet.create({
-		list: { padding: 16, gap: 10, flexGrow: 1 },
+		list: { padding: 16, paddingTop: 4, gap: 10, flexGrow: 1 },
 		empty: {
 			color: onBg,
 			opacity: 0.7,
@@ -121,11 +120,10 @@ const makeStyles = (t: Theme) => {
 		info: { flex: 1 },
 		spec: { color: t.text, fontWeight: "700", fontSize: 15 },
 		detail: { color: t.text + "99", fontSize: 13, marginTop: 2 },
-		time: { color: t.text + "77", fontSize: 12, marginTop: 4 },
 		result: {
-			color: legibleAccent(t.accent, t.card, t.text),
-			fontWeight: "900",
-			fontSize: 28,
+			color: t.text,
+			fontSize: 24,
+			fontWeight: "800",
 			maxWidth: 120,
 			textAlign: "right",
 		},
